@@ -63,6 +63,8 @@ const MyPageScreen = () => {
         <View style={styles.settingsSection}>
           <Text style={styles.sectionTitle}>설정</Text>
           <View style={styles.sectionCard}>
+          
+          {/* 알림 기능 추가 예정 
             <View style={styles.settingRow}>
               <Text style={styles.settingLabel}>알림</Text>
               <Switch
@@ -75,7 +77,8 @@ const MyPageScreen = () => {
                 thumbColor={colors.light.WHITE}
               />
             </View>
-
+            */}
+            
             <Pressable style={styles.settingRow} onPress={handleLanguagePress}>
               <Text style={styles.settingLabel}>언어</Text>
               <View style={styles.rowRight}>
@@ -84,7 +87,7 @@ const MyPageScreen = () => {
               </View>
             </Pressable>
 
-            <View style={styles.settingRow}>
+            <View style={[styles.settingRow, styles.noBorder]}>
               <Text style={styles.settingLabel}>다크 테마</Text>
               <Switch
                 value={theme}
@@ -108,7 +111,7 @@ const MyPageScreen = () => {
               <Text style={styles.chevron}>›</Text>
             </Pressable>
 
-            <Pressable style={styles.settingRow} onPress={handleSupportPress}>
+            <Pressable style={[styles.settingRow, styles.noBorder]} onPress={handleSupportPress}>
               <Text style={styles.settingLabel}>고객 지원</Text>
               <Text style={styles.chevron}>›</Text>
             </Pressable>
@@ -207,6 +210,9 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.light.GRAY_200,
+  },
+  noBorder: {
+    borderBottomWidth: 0,
   },
   rowRight: {
     flexDirection: 'row',

@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SearchScreen from '../screens/search/SearchScreen';
 import OnboardingScreen from '../screens/auth/OnboardingScreen';
+import { NavigationContainer } from '@react-navigation/native';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -40,13 +41,27 @@ function RootNavigation() {
     ? 'AuthNavigation'
     : 'BottomTabNavigation';
 
+  const navigationKey = `${guestMode}-${isAuthenticated}-${showOnboarding}`;
+
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={initialRouteName}>
-      <Stack.Screen name="OnboardingScreen" component={OnboardingScreen} />
-      <Stack.Screen name="AuthNavigation" component={AuthNavigation} />
-      <Stack.Screen name="BottomTabNavigation" component={BottomTabNavigations} />
-      <Stack.Screen name="SearchScreen" component={SearchScreen} options={{ headerShown: false }} />
-    </Stack.Navigator>
+    <NavigationContainer key={navigationKey}>
+      <Stack.Navigator
+        screenOptions={{ headerShown: false }}
+        initialRouteName={initialRouteName}
+      >
+        <Stack.Screen name="OnboardingScreen" component={OnboardingScreen} />
+        <Stack.Screen name="AuthNavigation" component={AuthNavigation} />
+        <Stack.Screen
+          name="BottomTabNavigation"
+          component={BottomTabNavigations}
+        />
+        <Stack.Screen
+          name="SearchScreen"
+          component={SearchScreen}
+          options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 

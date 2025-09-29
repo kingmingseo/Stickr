@@ -16,6 +16,7 @@ import TabButton from '../../components/TabButton';
 import AuthForm from '../../components/AuthForm';
 import { useKeyboard } from '../../hooks/keyboard/useKeyboard';
 import useAuth from '../../hooks/useAuth';
+import OAuthWebView from '../../components/OAuthWebView';
 
 const AuthHomeScreen = () => {
   const [mode, setMode] = useState<'login' | 'signup'>('login');
@@ -24,7 +25,15 @@ const AuthHomeScreen = () => {
   const imageSize = isSmallScreen ? 84 : 120;
   const verticalGap = isSmallScreen ? 6 : 12;
   const keyboardHeight = useKeyboard(300, 150);
-  const { signInWithGoogle, loading } = useAuth();
+  const { 
+    signInWithGoogle, 
+    loading, 
+    signInWithKakao,
+    isVisible,
+    oauthUrl,
+    closeModal,
+    handleOAuthWebViewCallback,
+  } = useAuth();
 
   return (
     <Animated.View
@@ -112,12 +121,24 @@ const AuthHomeScreen = () => {
             backgroundColor="#FEE500"
             textColor="rgba(0, 0, 0, 0.85)"
             leftIcon={<KakaoIcon width={18} height={18} />}
-            onPress={() => {}}
+            onPress={async () => {
+              console.log('카카오로 로그인 시작');
+              console.log(await signInWithKakao());
+            }}
           />
           {mode === 'login' && <Text style={styles.skip}>또는</Text>}
           <AuthForm mode={mode} />
         </View>
       </View>
+      
+      <OAuthWebView
+        visible={isVisible}
+        url={oauthUrl}
+        onClose={() => closeModal()}
+        onSuccess={async (callbackUrl) => {
+          await handleOAuthWebViewCallback( callbackUrl );
+        }}
+      />
     </Animated.View>
   );
 };

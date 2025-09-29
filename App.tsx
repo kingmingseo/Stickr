@@ -1,4 +1,3 @@
-import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar, StyleSheet } from 'react-native';
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -20,6 +19,9 @@ import Toast from 'react-native-toast-message';
 import { useEffect } from 'react';
 import BootSplash from 'react-native-bootsplash';
 import { colors } from './src/constants/colors';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+// import { supabase } from './src/api/supabaseClient';
+// import useAuth from './src/hooks/useAuth';
 
 const toastConfig = {
   successWithInstagram: () => (
@@ -27,46 +29,46 @@ const toastConfig = {
       <View style={styles.toastRow}>
         <View style={styles.titleCol}>
           <Text style={styles.toastTitle}>복사 완료!</Text>
-          <Text style={styles.toastSubtitle}>인스타그램   바로가기 </Text>
+          <Text style={styles.toastSubtitle}>인스타그램 바로가기 </Text>
         </View>
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={async () => {
-          try {
-            // Android: 기존 태스크를 앞으로 가져옴 (편집 상태 유지 기대)
-            if (
-              Platform.OS === 'android' &&
-              (NativeModules as any)?.AppSwitcher?.bringToForeground
-            ) {
-              console.log('Android: 기존 태스크를 앞으로 가져옴');
-              try {
-                await (NativeModules as any).AppSwitcher.bringToForeground(
-                  'com.instagram.android',
-                );
+            try {
+              // Android: 기존 태스크를 앞으로 가져옴 (편집 상태 유지 기대)
+              if (
+                Platform.OS === 'android' &&
+                (NativeModules as any)?.AppSwitcher?.bringToForeground
+              ) {
+                console.log('Android: 기존 태스크를 앞으로 가져옴');
+                try {
+                  await (NativeModules as any).AppSwitcher.bringToForeground(
+                    'com.instagram.android',
+                  );
+                  Toast.hide();
+                  return;
+                } catch {}
+              }
+
+              // iOS 또는 Android 폴백: 앱만 열기
+              const appUrl = 'instagram://app';
+              const canOpenApp = await Linking.canOpenURL(appUrl);
+              if (canOpenApp) {
+                await Linking.openURL(appUrl);
                 Toast.hide();
                 return;
-              } catch {}
-            }
+              }
 
-            // iOS 또는 Android 폴백: 앱만 열기
-            const appUrl = 'instagram://app';
-            const canOpenApp = await Linking.canOpenURL(appUrl);
-            if (canOpenApp) {
-              await Linking.openURL(appUrl);
-              Toast.hide();
-              return;
+              // 2순위: 웹 브라우저 (폴백)
+              await Linking.openURL('https://www.instagram.com/');
+            } catch (error) {
+              console.log('인스타그램 열기 실패:', error);
             }
-
-            // 2순위: 웹 브라우저 (폴백)
-            await Linking.openURL('https://www.instagram.com/');
-          } catch (error) {
-            console.log('인스타그램 열기 실패:', error);
-          }
-          Toast.hide();
+            Toast.hide();
           }}
         >
           <LinearGradient
-            colors={["#7C3AED", "#4F46E5"]}
+            colors={['#7C3AED', '#4F46E5']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.instagramButton}
@@ -80,7 +82,7 @@ const toastConfig = {
   appSuccess: ({ text1 }: any) => (
     <View style={styles.appToastContainer}>
       <LinearGradient
-        colors={["#7C3AED", "#4F46E5"]}
+        colors={['#7C3AED', '#4F46E5']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.appToastBg}
@@ -91,7 +93,7 @@ const toastConfig = {
   ),
   appError: ({ text1 }: any) => (
     <View style={styles.appToastContainer}>
-      <View style={[styles.appToastBg, { backgroundColor: '#EF4444' }] }>
+      <View style={[styles.appToastBg, { backgroundColor: '#EF4444' }]}>
         <Text style={styles.appToastText}>{text1 || '오류가 발생했어요'}</Text>
       </View>
     </View>
@@ -99,8 +101,16 @@ const toastConfig = {
 };
 
 function App() {
+  // const { handleOAuthCallback } = useAuth();
+
   useEffect(() => {
     const prepare = async () => {
+      // Google Sign-In 초기화
+      GoogleSignin.configure({
+        webClientId: process.env.GOOGLE_WEB_CLIENT_ID, // 웹 클라이언트 ID
+        offlineAccess: true,
+      });
+
       await new Promise(resolve => setTimeout(resolve, 1000));
     };
 
@@ -108,6 +118,7 @@ function App() {
       await BootSplash.hide({ fade: true });
     });
   }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
@@ -117,9 +128,7 @@ function App() {
             backgroundColor="white"
             translucent={false}
           />
-          <NavigationContainer>
-            <RootNavigation />
-          </NavigationContainer>
+          <RootNavigation />
           <Toast config={toastConfig} topOffset={60} bottomOffset={24} />
         </SafeAreaView>
       </SafeAreaProvider>
