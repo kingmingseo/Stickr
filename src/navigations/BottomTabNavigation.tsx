@@ -1,6 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { colors } from '../constants/colors';
+import { useThemeStore } from '../store/themeStore';
 import { BottomTabParamList } from '../types/navigation';
 import MainScreen from '../screens/home/MainScreen';
 import FavoritesScreen from '../screens/favorites/FavoritesScreen';
@@ -10,13 +11,14 @@ import CustomHeader from '../components/CustomHeader';
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
 const BottomTabNavigation = () => {
+  const theme = useThemeStore(s => s.theme);
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: true,
         header: () => <CustomHeader />,
         headerStyle: {
-          backgroundColor: '#fff',
+          backgroundColor: colors[theme].WHITE,
           height: 60,
           elevation: 0,
           shadowOpacity: 0,
@@ -26,10 +28,11 @@ const BottomTabNavigation = () => {
         tabBarStyle: {
           elevation: 0,
           shadowOpacity: 0,
-          borderTopColor: colors.light.GRAY_300,
+          borderTopColor: colors[theme].GRAY_300,
+          backgroundColor: colors[theme].WHITE,
         },
         tabBarActiveTintColor: '#6D5EF5',
-        tabBarInactiveTintColor: colors.light.GRAY_400,
+        tabBarInactiveTintColor: colors[theme].GRAY_400,
         tabBarLabelStyle: {
           fontSize: 12,
         },

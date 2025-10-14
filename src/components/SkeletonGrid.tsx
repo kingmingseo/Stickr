@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Dimensions, FlatList, StyleSheet, View, Animated } from 'react-native';
+import { useThemeStore } from '../store/themeStore';
+import { colors } from '../constants/colors';
 import { computeGridItemSize } from '../utils/grid';
 
 type SkeletonGridProps = {
@@ -13,6 +15,7 @@ type SkeletonGridProps = {
 
 const SkeletonGrid = ({ gap = 8, containerPaddingHorizontal = 0, borderRadius = 12, columns = 3, itemCount, itemSize: itemSizeProp }: SkeletonGridProps) => {
   const windowWidth = Dimensions.get('window').width;
+  const theme = useThemeStore(s => s.theme);
   const shimmer = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     const loop = Animated.loop(
@@ -48,8 +51,8 @@ const SkeletonGrid = ({ gap = 8, containerPaddingHorizontal = 0, borderRadius = 
           const animatedStyle = { opacity: shimmer.interpolate({ inputRange: [0, 1], outputRange: [0.2, 1] }) };
           return (
             <View style={[styles.item, { width: itemSize, height: itemSize, borderRadius }]}> 
-              <View style={[StyleSheet.absoluteFill, styles.itemBase, { borderRadius }]} />
-              <Animated.View style={[StyleSheet.absoluteFill, styles.itemHighlight, { borderRadius }, animatedStyle]} />
+              <View style={[StyleSheet.absoluteFill, styles.itemBase, { borderRadius, backgroundColor: colors[theme].GRAY_200 }]} />
+              <Animated.View style={[StyleSheet.absoluteFill, styles.itemHighlight, { borderRadius, backgroundColor: colors[theme].GRAY_100 }, animatedStyle]} />
             </View>
           );
         }}
@@ -65,12 +68,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: 'transparent',
   },
-  itemBase: {
-    backgroundColor: '#E8E8E8',
-  },
-  itemHighlight: {
-    backgroundColor: '#F5F5F5',
-  },
+  itemBase: {},
+  itemHighlight: {},
 });
 
 

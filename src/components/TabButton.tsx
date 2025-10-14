@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View, StyleProp, ViewStyle, Animated } from 'react-native';
 import { colors } from '../constants/colors';
+import { ThemeMode, useThemeStore } from '../store/themeStore';
 
 type TabOption = { label: string; value: string };
 
@@ -30,6 +31,8 @@ const TabButton = ({ options, value, onChange, style }: TabButtonProps) => {
     }).start();
   }, [activeIndex, itemWidth, translateX]);
 
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
   return (
     <View
       style={[styles.segmented, style]}
@@ -67,11 +70,11 @@ const TabButton = ({ options, value, onChange, style }: TabButtonProps) => {
 
 export default TabButton;
 
-const styles = StyleSheet.create({
+const styling = (theme: ThemeMode) => StyleSheet.create({
   segmented: {
     width: '100%',
     flexDirection: 'row',
-    backgroundColor: colors.light.GRAY_100,
+    backgroundColor: colors[theme].GRAY_100,
     borderRadius: 14,
     padding: 4,
     position: 'relative',
@@ -81,7 +84,7 @@ const styles = StyleSheet.create({
     left: 4,
     top: 4,
     bottom: 4,
-    backgroundColor: colors.light.WHITE,
+    backgroundColor: colors[theme].WHITE,
     borderRadius: 10,
     shadowColor: '#000',
     shadowOpacity: 0.06,
@@ -98,10 +101,10 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   segmentText: {
-    color: colors.light.GRAY_400,
+    color: colors[theme].GRAY_400,
     fontWeight: '700',
   },
   segmentTextActive: {
-    color: colors.light.MAIN_DARK_TEXT,
+    color: colors[theme].MAIN_DARK_TEXT,
   },
 });

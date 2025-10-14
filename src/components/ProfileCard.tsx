@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, Image } from 'react-native';
 import React from 'react';
 import { colors } from '../constants/colors';
+import { ThemeMode, useThemeStore } from '../store/themeStore';
 import ChipButton from './ChipButton';
 import MyInfo from './MyInfo';
 import { useNavigation } from '@react-navigation/native';
@@ -16,6 +17,8 @@ interface ProfileCardProps {
 const ProfileCard = ({ isAuthenticated, profile }: ProfileCardProps) => {
   const navigation = useNavigation<StackNavigationProp<MyPageStackParamList>>();
   
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
   return (
     <View style={styles.container}>
       <Image
@@ -34,7 +37,7 @@ const ProfileCard = ({ isAuthenticated, profile }: ProfileCardProps) => {
       ) : null}
       <ChipButton
         label={isAuthenticated ? "내 정보 수정" : "게스트 모드"}
-        color={colors.light.GRAY_100}
+        color={colors[theme].GRAY_100}
         style={{ marginRight: 0 }}
         onPress={() => isAuthenticated && navigation.navigate('ProfileEditScreen')}
       />
@@ -45,11 +48,11 @@ const ProfileCard = ({ isAuthenticated, profile }: ProfileCardProps) => {
 
 export default ProfileCard;
 
-const styles = StyleSheet.create({
+const styling = (theme: ThemeMode) => StyleSheet.create({
   container: {
     paddingTop: 30,
     width: '100%',
-    backgroundColor: colors.light.WHITE,
+    backgroundColor: colors[theme].WHITE,
     borderRadius: 16,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -70,13 +73,13 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: colors.light.MAIN_DARK_TEXT,
+    color: colors[theme].MAIN_DARK_TEXT,
   },
   subText: {
     marginTop: 6,
     marginBottom: 6,
     fontSize: 14,
-    color: colors.light.GRAY_400,
+    color: colors[theme].GRAY_400,
     textAlign: 'center',
   },
 });

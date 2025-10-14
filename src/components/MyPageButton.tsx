@@ -10,6 +10,7 @@ import React from 'react';
 import { colors } from '../constants/colors';
 import LinearGradient from 'react-native-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
+import { ThemeMode, useThemeStore } from '../store/themeStore';
 
 interface MyPageButtonProps {
   label: string;
@@ -21,6 +22,8 @@ interface MyPageButtonProps {
 }
 
 const MyPageButton = ({ label, onPress, color, gradientColors }: MyPageButtonProps) => {
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
   const renderText = () => {
     if (gradientColors) {
       return (
@@ -50,17 +53,17 @@ const MyPageButton = ({ label, onPress, color, gradientColors }: MyPageButtonPro
 
 export default MyPageButton;
 
-const styles = StyleSheet.create({
+const styling = (theme: ThemeMode) => StyleSheet.create({
   container: {
     width: '100%',
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.light.WHITE,
+    backgroundColor: colors[theme].WHITE,
     padding: 10,
   },
   text: {
-    color: colors.light.MAIN_DARK_TEXT,
+    color: colors[theme].MAIN_DARK_TEXT,
     fontSize: 16,
     fontWeight: '600',
   },

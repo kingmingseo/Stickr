@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import React from 'react';
 import { colors } from '../constants/colors';
+import { ThemeMode, useThemeStore } from '../store/themeStore';
 
 interface GeneralCustomButtonProps extends PressableProps {
   label: string | React.ReactNode;
@@ -29,6 +30,8 @@ const GeneralCustomButton = ({
   rightIcon,
   ...props
 }: GeneralCustomButtonProps) => {
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
   return (
     <Pressable
       style={({ pressed }) => [
@@ -53,7 +56,7 @@ const GeneralCustomButton = ({
 
 export default GeneralCustomButton;
 
-const styles = StyleSheet.create({
+const styling = (theme: ThemeMode) => StyleSheet.create({
   button: {
     borderRadius: 10,
     alignItems: 'center',
@@ -87,17 +90,17 @@ const styles = StyleSheet.create({
   },
   largeText: {
     fontSize: 14,
-    color: colors.light.MAIN_DARK_TEXT,
+    color: colors[theme].MAIN_DARK_TEXT,
     fontWeight: '600',
   },
   mediumText: {
     fontSize: 12,
-    color: colors.light.MAIN_DARK_TEXT,
+    color: colors[theme].MAIN_DARK_TEXT,
     fontWeight: '600',
   },
   smallText: {
     fontSize: 10,
-    color: colors.light.MAIN_DARK_TEXT,
+    color: colors[theme].MAIN_DARK_TEXT,
     fontWeight: '600',
   },
 });

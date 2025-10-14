@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { colors } from '../constants/colors';
+import { ThemeMode, useThemeStore } from '../store/themeStore';
 import { useNavigation } from '@react-navigation/native';
 import GradientButton from './GradientButton';
 import { RootStackParamList } from '../types/navigation';
@@ -16,6 +17,8 @@ const LoginPrompt = () => {
     });
   };
 
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -35,10 +38,10 @@ const LoginPrompt = () => {
 
 export default LoginPrompt;
 
-const styles = StyleSheet.create({
+const styling = (theme: ThemeMode) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.light.WHITE,
+    backgroundColor: colors[theme].WHITE,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 32,
@@ -49,12 +52,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: colors.light.MAIN_DARK_TEXT,
+    color: colors[theme].MAIN_DARK_TEXT,
     marginBottom: 12,
   },
   description: {
     fontSize: 16,
-    color: colors.light.GRAY_500,
+    color: colors[theme].GRAY_500,
     textAlign: 'center',
     lineHeight: 24,
     marginBottom: 32,

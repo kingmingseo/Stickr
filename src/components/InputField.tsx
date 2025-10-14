@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import React, { Ref } from 'react';
 import { colors } from '../constants/colors';
+import { ThemeMode, useThemeStore } from '../store/themeStore';
 
 interface InputFieldProps extends TextInputProps {
   ref?: Ref<TextInput>;
@@ -21,11 +22,13 @@ const InputField = ({
   disabled = false,
   ...props
 }: InputFieldProps) => {
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
   return (
     <View>
       <TextInput
         {...props}
-        placeholderTextColor={colors.light.GRAY_400}
+        placeholderTextColor={colors[theme].GRAY_400}
         style={[
           styles.input,
           props.multiline && styles.multiline,
@@ -44,26 +47,26 @@ const InputField = ({
 
 export default InputField;
 
-const styles = StyleSheet.create({
+const styling = (theme: ThemeMode) => StyleSheet.create({
   input: {
     borderWidth: 1,
     justifyContent: 'center',
     height: 50,
-    borderColor: colors.light.GRAY_200,
+    borderColor: colors[theme].GRAY_200,
     borderRadius: 12,
     fontSize: 16,
-    color: colors.light.MAIN_DARK_TEXT,
-    backgroundColor: colors.light.WHITE,
+    color: colors[theme].MAIN_DARK_TEXT,
+    backgroundColor: colors[theme].WHITE,
     paddingHorizontal: 10,
   },
   error: {
-    color: colors.light.RED_500,
+    color: colors[theme].RED_500,
     fontSize: 12,
     paddingTop: 5,
   },
   inputError: {
     borderWidth: 1,
-    borderColor: colors.light.RED_300,
+    borderColor: colors[theme].RED_300,
   },
   multiline: {
     height: 150,
@@ -71,7 +74,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   disabled: {
-    backgroundColor: colors.light.GRAY_200,
-    color: colors.light.GRAY_400,
+    backgroundColor: colors[theme].GRAY_200,
+    color: colors[theme].GRAY_400,
   },
 });

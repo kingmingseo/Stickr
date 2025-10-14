@@ -11,6 +11,7 @@ import {
 import { WebView } from 'react-native-webview';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { colors } from '../constants/colors';
+import { ThemeMode, useThemeStore } from '../store/themeStore';
 
 interface OAuthWebViewProps {
   visible: boolean;
@@ -26,6 +27,8 @@ const OAuthWebView: React.FC<OAuthWebViewProps> = ({
   onSuccess,
 }) => {
   const [loading, setLoading] = useState(true);
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
 
   const handleNavigationStateChange = (navState: any) => {
     const { url: currentUrl } = navState;
@@ -99,10 +102,10 @@ const OAuthWebView: React.FC<OAuthWebViewProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styling = (theme: ThemeMode) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.light.WHITE,
+    backgroundColor: colors[theme].WHITE,
   },
   header: {
     flexDirection: 'row',
@@ -111,7 +114,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: colors.light.GRAY_100,
+    borderBottomColor: colors[theme].GRAY_100,
   },
   closeButton: {
     width: 40,
@@ -122,7 +125,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '600',
-    color: colors.light.MAIN_DARK_TEXT,
+    color: colors[theme].MAIN_DARK_TEXT,
   },
   placeholder: {
     width: 40,
@@ -136,7 +139,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: colors.light.WHITE,
+    backgroundColor: colors[theme].WHITE,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1,
@@ -144,7 +147,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 12,
     fontSize: 14,
-    color: colors.light.GRAY_400,
+    color: colors[theme].GRAY_400,
   },
 });
 

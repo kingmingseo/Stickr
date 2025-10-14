@@ -2,6 +2,7 @@ import { StyleSheet, View } from 'react-native';
 import React, { useState } from 'react';
 import ChipButtonGroup from '../../components/ChipButtonGroup';
 import { colors } from '../../constants/colors';
+import { ThemeMode, useThemeStore } from '../../store/themeStore';
 import StickerCardContainer from '../../components/StickerCardContainer';
 import useSupabaseSession from '../../hooks/useSupabaseSession';
 import LoginPrompt from '../../components/LoginPrompt';
@@ -26,6 +27,9 @@ const FavoritesScreenContent = () => {
   const stickers: Sticker[] = (data?.pages ?? []).flatMap(page =>
     page && Array.isArray(page.data) ? (page.data as Sticker[]) : [],
   );
+
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
 
   return isAuthenticated ? (
     <View style={styles.container}>
@@ -59,9 +63,9 @@ const FavoritesScreen = () => {
 
 export default FavoritesScreen;
 
-const styles = StyleSheet.create({
+const styling = (theme: ThemeMode) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.light.WHITE,
+    backgroundColor: colors[theme].WHITE,
   },
 });

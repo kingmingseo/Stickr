@@ -1,8 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import { colors } from '../constants/colors';
+import { ThemeMode, useThemeStore } from '../store/themeStore';
 
 const MyInfo = () => {
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
   return (
     <View style={styles.myInfoContainer}>
       <View style={styles.infoContainer}>
@@ -23,35 +26,35 @@ const MyInfo = () => {
 
 export default MyInfo;
 
-const styles = StyleSheet.create({
+const styling = (theme: ThemeMode) => StyleSheet.create({
   myInfoContainer: {
     overflow: 'hidden',
     borderRadius: 15,
     flexDirection: 'row',
     width: '100%',
     height: 100,
-    backgroundColor: colors.light.WHITE,
+    backgroundColor: colors[theme].WHITE,
     justifyContent: 'center',
     alignItems: 'center',
   },
   infoContainer: {
     width: '33.33%',
     height: 100,
-    backgroundColor: colors.light.WHITE,
+    backgroundColor: colors[theme].WHITE,
     justifyContent: 'center',
     alignItems: 'center',
   },
   infoNumber: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: colors.light.PURPLE_400,
+    color: colors[theme].PURPLE_400,
   },
   infoText: {
     fontSize: 14,
-    color: colors.light.SUB_DARK_TEXT,
+    color: colors[theme].SUB_DARK_TEXT,
   },
   copyNumber: {
-    color: colors.light.PURPLE_400,
+    color: colors[theme].PURPLE_400,
   },
   likeNumber: {
     color: '#60A5FA',

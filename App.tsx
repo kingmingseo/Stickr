@@ -19,6 +19,7 @@ import Toast from 'react-native-toast-message';
 import { useEffect } from 'react';
 import BootSplash from 'react-native-bootsplash';
 import { colors } from './src/constants/colors';
+import { useThemeStore } from './src/store/themeStore';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 // import { supabase } from './src/api/supabaseClient';
 // import useAuth from './src/hooks/useAuth';
@@ -29,7 +30,8 @@ const toastConfig = {
       <View style={styles.toastRow}>
         <View style={styles.titleCol}>
           <Text style={styles.toastTitle}>복사 완료!</Text>
-          <Text style={styles.toastSubtitle}>인스타그램 바로가기 </Text>
+          <Text style={styles.toastSubtitle}>인스타그램 </Text>
+          <Text style={styles.toastSubtitle}>바로가기 </Text>
         </View>
         <TouchableOpacity
           activeOpacity={0.9}
@@ -102,6 +104,8 @@ const toastConfig = {
 
 function App() {
   // const { handleOAuthCallback } = useAuth();
+  const theme = useThemeStore(s => s.theme);
+  const loadTheme = useThemeStore(s => s.loadTheme);
 
   useEffect(() => {
     const prepare = async () => {
@@ -119,13 +123,17 @@ function App() {
     });
   }, []);
 
+  useEffect(() => {
+    loadTheme();
+  }, [loadTheme]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, { backgroundColor: colors[theme].WHITE }]}>
           <StatusBar
-            barStyle="dark-content"
-            backgroundColor="white"
+            barStyle={theme === 'dark' ? 'light-content' : 'dark-content'}
+            backgroundColor={colors[theme].WHITE}
             translucent={false}
           />
           <RootNavigation />
@@ -164,12 +172,12 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
+    marginBottom: 4,
   },
   toastSubtitle: {
     color: 'rgba(255,255,255,0.9)',
     fontSize: 12,
     fontWeight: '500',
-    marginTop: 4,
   },
   instagramButton: {
     width: 40,

@@ -8,6 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { colors } from '../constants/colors';
+import { ThemeMode, useThemeStore } from '../store/themeStore';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 interface ErrorPopupProps {
@@ -27,6 +28,8 @@ const ErrorPopup: React.FC<ErrorPopupProps> = ({
   message,
   type = 'error',
 }) => {
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
   const getIconName = () => {
     switch (type) {
       case 'error':
@@ -122,7 +125,7 @@ const ErrorPopup: React.FC<ErrorPopupProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styling = (theme: ThemeMode) => StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -160,13 +163,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '700',
-    color: colors.light.MAIN_DARK_TEXT,
+    color: colors[theme].MAIN_DARK_TEXT,
     textAlign: 'center',
     marginBottom: 12,
   },
   message: {
     fontSize: 16,
-    color: colors.light.SUB_DARK_TEXT,
+    color: colors[theme].SUB_DARK_TEXT,
     textAlign: 'center',
     lineHeight: 24,
     marginBottom: 28,

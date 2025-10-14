@@ -11,7 +11,12 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/navigation';
 import { useNavigation } from '@react-navigation/native';
 
+import { colors } from '../constants/colors';
+import { ThemeMode, useThemeStore } from '../store/themeStore';
+
 const CustomHeader = () => {
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   return (
     <View style={styles.container}>
@@ -39,20 +44,20 @@ const CustomHeader = () => {
           navigation.navigate('SearchScreen');
         }}
       >
-        <Icon name="search" size={20} color="#333" />
+        <Icon name="search" size={20} color={colors[theme].MAIN_DARK_TEXT} />
       </TouchableOpacity>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const styling = (theme: ThemeMode) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     height: 60,
     paddingHorizontal: 16,
-    backgroundColor: '#fff',
+    backgroundColor: colors[theme].WHITE,
   },
   logoContainer: {
     marginLeft: 0,

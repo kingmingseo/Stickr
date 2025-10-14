@@ -1,5 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { ThemeMode, useThemeStore } from '../store/themeStore';
+import { colors } from '../constants/colors';
 import ChipButton from './ChipButton';
 
 interface ChipButtonGroupProps {
@@ -17,6 +19,8 @@ const ChipButtonGroup = ({
   chipStyle = 'rounded',
   leftComponent,
 }: ChipButtonGroupProps) => {
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
   return (
     <View style={styles.container}>
       <View style={styles.row}>
@@ -45,7 +49,7 @@ const ChipButtonGroup = ({
 
 export default ChipButtonGroup;
 
-const styles = StyleSheet.create({
+const styling = (theme: ThemeMode) => StyleSheet.create({
   container: {
     paddingVertical: 8,
   },
@@ -61,7 +65,7 @@ const styles = StyleSheet.create({
   divider: {
     width: 1,
     height: 24,
-    backgroundColor: '#E5E7EB',
-    marginRight: 8,
+    backgroundColor: colors[theme].GRAY_200,
+    marginHorizontal: 6,
   },
 });

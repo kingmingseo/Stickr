@@ -6,6 +6,7 @@ export async function getRecentStickers(
   cursor?: string,
   category?: string,
 ): Promise<{ data: Sticker[]; nextCursor: string | null }> {
+  console.log('호출')
   let query = supabase
   .from('sticker')
   .select('*, user_favorites(user_id)')

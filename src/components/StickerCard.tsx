@@ -11,6 +11,8 @@ import {
 import RNFS from 'react-native-fs';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Toast from 'react-native-toast-message';
+import { colors } from '../constants/colors';
+import { ThemeMode, useThemeStore } from '../store/themeStore';
 import HeartButton from './HeartButton';
 import { Sticker } from '../types/sticker';
 import { toggleFavorite } from '../api/sticker';
@@ -31,15 +33,18 @@ export const StickerCard = ({
   borderRadius,
   onPress,
 }: StickerCardProps) => {
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
   const [isHeartPressed, setIsHeartPressed] = useState(sticker.is_favorited);
   const [isCopying, setIsCopying] = useState(false);
   const uri = sticker.image_url;
   const { selectedCategory, sortBy } = useFilter();
   const mappedCategory = categoriesMap[selectedCategory] ?? selectedCategory;
-
+  console.log("render");
   const handleHeartPress = async () => {
     const optimistic = !isHeartPressed;
     setIsHeartPressed(optimistic);
+
     try {
       const res = await toggleFavorite(sticker.id);
       setIsHeartPressed(res.is_favorited);
@@ -150,7 +155,7 @@ export const StickerCard = ({
       <Image
         source={{ uri }}
         style={[styles.image, { width: size, height: size, borderRadius }]}
-        resizeMode="cover"
+        resizeMode="contain"
       />
     </View>
   );
@@ -179,19 +184,20 @@ export const StickerCard = ({
   return <View>{content}</View>;
 };
 
-const styles = StyleSheet.create({
-  container: {
-    position: 'relative',
-  },
-  image: {
-    backgroundColor: '#F0F0F0',
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    backgroundColor: 'rgba(0,0,0,0.25)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
+const styling = (theme: ThemeMode) =>
+  StyleSheet.create({
+    container: {
+      position: 'relative',
+    },
+    image: {
+      backgroundColor: colors[theme].GRAY_100,
+    },
+    overlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      backgroundColor: 'rgba(0,0,0,0.25)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });

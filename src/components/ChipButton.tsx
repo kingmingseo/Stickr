@@ -1,6 +1,7 @@
 import { Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import React from 'react';
 import { colors } from '../constants/colors';
+import { ThemeMode, useThemeStore } from '../store/themeStore';
 
 interface ChipButtonProps {
   label: string;
@@ -21,6 +22,8 @@ const ChipButton = ({
   rightIcon,
   style,
 }: ChipButtonProps) => {
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
   return (
     <Pressable
       style={[
@@ -44,9 +47,9 @@ const ChipButton = ({
 
 export default ChipButton;
 
-const styles = StyleSheet.create({
+const styling = (theme: ThemeMode) => StyleSheet.create({
   container: {
-    backgroundColor: colors.light.GRAY_200,
+    backgroundColor: colors[theme].GRAY_200,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
@@ -56,12 +59,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectedContainer: {
-    backgroundColor: colors.light.PURPLE_400,
+    backgroundColor: colors[theme].PURPLE_400,
   },
   text: {
     fontSize: 14,
     fontWeight: '500',
-    color: colors.light.MAIN_DARK_TEXT,
+    color: colors[theme].MAIN_DARK_TEXT,
   },
   selectedText: {
     color: '#fff',

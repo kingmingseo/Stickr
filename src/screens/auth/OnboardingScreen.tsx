@@ -1,6 +1,7 @@
 import { Dimensions, FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import React, { useMemo, useRef, useState } from 'react';
 import { colors } from '../../constants/colors';
+import { ThemeMode, useThemeStore } from '../../store/themeStore';
 import Video from 'react-native-video';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -40,6 +41,8 @@ const OnboardingScreen = () => {
     }
   };
 
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
   return (
     <View style={styles.container}>
       <FlatList
@@ -84,10 +87,10 @@ const OnboardingScreen = () => {
 
 export default OnboardingScreen;
 
-const styles = StyleSheet.create({
+const styling = (theme: ThemeMode) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.light.WHITE,
+    backgroundColor: colors[theme].WHITE,
   },
   page: {
     flex: 1,
@@ -107,13 +110,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: '800',
-    color: colors.light.MAIN_DARK_TEXT,
+    color: colors[theme].MAIN_DARK_TEXT,
     textAlign: 'center',
   },
   subtitle: {
     marginTop: 8,
     fontSize: 14,
-    color: colors.light.GRAY_400,
+    color: colors[theme].GRAY_400,
     textAlign: 'center',
   },
   footer: {
@@ -132,10 +135,10 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: colors.light.GRAY_200,
+    backgroundColor: colors[theme].GRAY_200,
   },
   dotActive: {
-    backgroundColor: colors.light.PURPLE_400,
+    backgroundColor: colors[theme].PURPLE_400,
     width: 20,
   },
   cta: {
@@ -143,12 +146,12 @@ const styles = StyleSheet.create({
     width: '90%',
     height: 48,
     borderRadius: 12,
-    backgroundColor: colors.light.PURPLE_400,
+    backgroundColor: colors[theme].PURPLE_400,
     alignItems: 'center',
     justifyContent: 'center',
   },
   ctaText: {
-    color: colors.light.WHITE,
+    color: colors[theme].WHITE,
     fontSize: 16,
     fontWeight: '700',
   },

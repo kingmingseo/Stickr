@@ -1,11 +1,12 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import { colors } from '../../constants/colors';
+import { ThemeMode, useThemeStore } from '../../store/themeStore';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { MyPageStackParamList } from '../../types/navigation';
-import { useProfileStore } from '../../store/profileStore';
+import useGetProfile from '../../hooks/query/useGetProfile';
 import useSupabaseSession from '../../hooks/useSupabaseSession';
 import { useModal } from '../../hooks/useModal';
 import BottomSheet from '../../components/BottomSheet';
@@ -15,9 +16,9 @@ import Toast from 'react-native-toast-message';
 
 const ProfileEditScreen = () => {
   const navigation = useNavigation<StackNavigationProp<MyPageStackParamList>>();
-  const profile = useProfileStore(s => s.profile);
+  const {user} = useSupabaseSession();
+  const { data: profile } = useGetProfile(user?.id);
   const { openModal, closeModal, isVisible } = useModal();
-  const { user } = useSupabaseSession();
   const { pickImage } = useImagePicker();
   const updateProfileImageMutation = useUpdateProfileImage();
 
@@ -47,6 +48,8 @@ const ProfileEditScreen = () => {
     }
   };
 
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
   return (
     <View style={styles.container}>
       <View style={styles.profileImageWrapper}>
@@ -65,7 +68,7 @@ const ProfileEditScreen = () => {
             openModal('프로필 사진 변경', '프로필 사진을 변경하세요');
           }}
         >
-          <Icon name="camera" size={16} color={colors.light.MAIN_DARK_TEXT} />
+          <Icon name="camera" size={16} color={colors[theme].MAIN_DARK_TEXT} />
         </Pressable>
       </View>
       <View style={styles.profileInfo}>
@@ -133,10 +136,10 @@ const ProfileEditScreen = () => {
 
 export default ProfileEditScreen;
 
-const styles = StyleSheet.create({
+const styling = (theme: ThemeMode) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.light.WHITE,
+    backgroundColor: colors[theme].WHITE,
     alignItems: 'center',
     paddingTop: 30,
   },
@@ -151,7 +154,7 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 100,
     borderWidth: 1,
-    borderColor: colors.light.GRAY_300,
+    borderColor: colors[theme].GRAY_300,
   },
   profileInfo: {
     marginTop: 20,
@@ -165,11 +168,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     height: 50,
-    borderColor: colors.light.GRAY_200,
+    borderColor: colors[theme].GRAY_200,
     borderRadius: 12,
     fontSize: 16,
-    color: colors.light.MAIN_DARK_TEXT,
-    backgroundColor: colors.light.WHITE,
+    color: colors[theme].MAIN_DARK_TEXT,
+    backgroundColor: colors[theme].WHITE,
     paddingLeft: 20,
     paddingRight: 10,
   },
@@ -178,18 +181,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     height: 120,
-    borderColor: colors.light.GRAY_200,
+    borderColor: colors[theme].GRAY_200,
     borderRadius: 12,
   },
 
   infoLabel: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: colors.light.MAIN_DARK_TEXT,
+    color: colors[theme].MAIN_DARK_TEXT,
   },
   infoValue: {
     fontSize: 14,
-    color: colors.light.MAIN_DARK_TEXT,
+    color: colors[theme].MAIN_DARK_TEXT,
   },
   rowRight: {
     flexDirection: 'row',
@@ -197,7 +200,7 @@ const styles = StyleSheet.create({
   },
   chevron: {
     fontSize: 30,
-    color: colors.light.GRAY_400,
+    color: colors[theme].GRAY_400,
     marginLeft: 8,
     marginBottom: 5,
   },
@@ -208,7 +211,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   exitButtonText: {
-    color: colors.light.SUB_DARK_TEXT,
+    color: colors[theme].SUB_DARK_TEXT,
     fontWeight: '500',
     fontSize: 14,
   },
@@ -219,9 +222,9 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: colors.light.WHITE,
+    backgroundColor: colors[theme].WHITE,
     borderWidth: 1,
-    borderColor: colors.light.GRAY_300,
+    borderColor: colors[theme].GRAY_300,
     justifyContent: 'center',
     alignItems: 'center',
     // subtle shadow

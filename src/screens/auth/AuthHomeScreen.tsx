@@ -11,6 +11,7 @@ import { Platform } from 'react-native';
 import React, { useState } from 'react';
 import GeneralCustomButton from '../../components/GeneralCustomButton';
 import { colors } from '../../constants/colors';
+import { ThemeMode, useThemeStore } from '../../store/themeStore';
 import KakaoIcon from '../../assets/Kakao.svg';
 import TabButton from '../../components/TabButton';
 import AuthForm from '../../components/AuthForm';
@@ -25,15 +26,18 @@ const AuthHomeScreen = () => {
   const imageSize = isSmallScreen ? 84 : 120;
   const verticalGap = isSmallScreen ? 6 : 12;
   const keyboardHeight = useKeyboard(300, 150);
-  const { 
-    signInWithGoogle, 
-    loading, 
+  const {
+    signInWithGoogle,
+    loading,
     signInWithKakao,
     isVisible,
     oauthUrl,
     closeModal,
     handleOAuthWebViewCallback,
   } = useAuth();
+
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
 
   return (
     <Animated.View
@@ -43,7 +47,7 @@ const AuthHomeScreen = () => {
         right: 0,
         top: Animated.multiply(keyboardHeight, -1), // 키보드 높이만큼 위로
         bottom: 0,
-        backgroundColor: 'white', // 필요 시 배경색
+        backgroundColor: colors[theme].WHITE, // 필요 시 배경색
       }}
     >
       <View style={styles.container}>
@@ -90,7 +94,11 @@ const AuthHomeScreen = () => {
               leftIcon={
                 <Icon name="apple" size={18} color={colors.light.WHITE} />
               }
-              label={mode === 'signup' ? 'Apple로 회원가입하기' : 'Apple로 로그인하기'}
+              label={
+                mode === 'signup'
+                  ? 'Apple로 회원가입하기'
+                  : 'Apple로 로그인하기'
+              }
               size="large"
               backgroundColor={colors.light.BLACK}
               textColor={colors.light.WHITE}
@@ -104,7 +112,11 @@ const AuthHomeScreen = () => {
                   <Icon name="google" size={20} color="#4285F4" />
                 </View>
               }
-              label={mode === 'signup' ? 'Google로 회원가입하기' : 'Google로 로그인하기'}
+              label={
+                mode === 'signup'
+                  ? 'Google로 회원가입하기'
+                  : 'Google로 로그인하기'
+              }
               size="large"
               backgroundColor={colors.light.WHITE}
               textColor={colors.light.MAIN_DARK_TEXT}
@@ -116,7 +128,11 @@ const AuthHomeScreen = () => {
             />
           )}
           <GeneralCustomButton
-            label={mode === 'signup' ? '카카오로 회원가입하기' : '카카오로 로그인하기'}
+            label={
+              mode === 'signup'
+                ? '카카오로 회원가입하기'
+                : '카카오로 로그인하기'
+            }
             size="large"
             backgroundColor="#FEE500"
             textColor="rgba(0, 0, 0, 0.85)"
@@ -130,13 +146,13 @@ const AuthHomeScreen = () => {
           <AuthForm mode={mode} />
         </View>
       </View>
-      
+
       <OAuthWebView
         visible={isVisible}
         url={oauthUrl}
         onClose={() => closeModal()}
-        onSuccess={async (callbackUrl) => {
-          await handleOAuthWebViewCallback( callbackUrl );
+        onSuccess={async callbackUrl => {
+          await handleOAuthWebViewCallback(callbackUrl);
         }}
       />
     </Animated.View>
@@ -145,11 +161,11 @@ const AuthHomeScreen = () => {
 
 export default AuthHomeScreen;
 
-const styles = StyleSheet.create({
+const styling = (theme: ThemeMode) => StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
-    backgroundColor: colors.light.WHITE,
+    backgroundColor: colors[theme].WHITE,
   },
   imageContainer: {
     flex: 0.5,
@@ -171,7 +187,7 @@ const styles = StyleSheet.create({
     flex: 0.4,
   },
   guestButton: {
-    color: colors.light.GRAY_100,
+    color: colors[theme].GRAY_100,
   },
   imageTextContainer: {
     marginTop: 12,
@@ -181,13 +197,13 @@ const styles = StyleSheet.create({
   imageText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: colors.light.MAIN_DARK_TEXT,
+    color: colors[theme].MAIN_DARK_TEXT,
     textAlign: 'center',
     marginBottom: 4,
   },
   imageSubText: {
     fontSize: 16,
-    color: colors.light.GRAY_400,
+    color: colors[theme].GRAY_400,
     textAlign: 'center',
     lineHeight: 22,
   },

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { supabase } from '../api/supabaseClient';
-import { useProfileStore } from '../store/profileStore';
 import queryClient from '../api/queryClient';
 import {
   GoogleSignin,
@@ -24,17 +23,16 @@ function normalizeToAuthError(err: any): { message: string; code?: string } {
   return { message, code };
 }
 
-
 function useAuth() {
   const [loading, setLoading] = useState(false);
-  const {isVisible, openModal, closeModal} = useModal();
+  const { isVisible, openModal, closeModal } = useModal();
   const [oauthUrl, setOauthUrl] = useState('');
   const [authError, setAuthError] = useState<AuthError>(null);
 
   function clearAuthError() {
     setAuthError(null);
   }
-  
+
   async function signInWithEmail({
     email,
     password,
@@ -63,7 +61,6 @@ function useAuth() {
         .eq('id', user.id)
         .single();
       if (!profileError) {
-        useProfileStore.getState().setProfile(profile);
         queryClient.setQueryData(['profile', profile.id], profile);
         queryClient.invalidateQueries({ queryKey: ['profile', profile.id] });
       }
@@ -89,7 +86,6 @@ function useAuth() {
         setAuthError(normalizeToAuthError(error));
         return { error };
       }
-      useProfileStore.getState().clearProfile();
       return {};
     } catch (error) {
       setAuthError(normalizeToAuthError(error));
@@ -163,7 +159,6 @@ function useAuth() {
       console.log('프로필 업데이트 완료:', profile);
 
       if (profile) {
-        useProfileStore.getState().setProfile(profile);
         queryClient.setQueryData(['profile', profile.id], profile);
         queryClient.invalidateQueries({ queryKey: ['profile', profile.id] });
       }
@@ -298,7 +293,6 @@ function useAuth() {
       console.log('프로필 업데이트 완료:', profile);
 
       if (profile) {
-        useProfileStore.getState().setProfile(profile);
         queryClient.setQueryData(['profile', profile.id], profile);
         queryClient.invalidateQueries({ queryKey: ['profile', profile.id] });
       }
@@ -316,35 +310,37 @@ function useAuth() {
   }
 
   // OAuth WebView 콜백 URL 처리
-  async function handleOAuthWebViewCallback(callbackUrl: string): Promise<{ error?: any }> {
+  async function handleOAuthWebViewCallback(
+    callbackUrl: string,
+  ): Promise<{ error?: any }> {
     try {
       console.log('OAuth WebView 콜백 URL:', callbackUrl);
-      
+
       // URL에서 access_token과 refresh_token 추출 (fragment 부분에서)
       const urlObj = new URL(callbackUrl);
 
       // Fragment에서 파라미터 추출
       const fragment = urlObj.hash.substring(1); // # 제거
       const params = new URLSearchParams(fragment);
-      
+
       const accessToken = params.get('access_token');
       const refreshToken = params.get('refresh_token');
-      
+
       if (accessToken && refreshToken) {
         // Supabase 세션 설정
         const { data, error } = await supabase.auth.setSession({
           access_token: accessToken,
           refresh_token: refreshToken,
         });
-        
+
         if (error) {
           console.error('OAuth 콜백 처리 에러:', error);
           setAuthError(normalizeToAuthError(error));
           return { error };
         }
-        
+
         console.log('OAuth 로그인 성공:', data);
-        
+
         // 사용자 정보가 있으면 프로필 업데이트
         if (data?.user) {
           await handleOAuthCallback(data.user);

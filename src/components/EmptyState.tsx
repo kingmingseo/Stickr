@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { colors } from '../constants/colors';
+import { ThemeMode, useThemeStore } from '../store/themeStore';
 
 type EmptyStateProps = {
   title?: string;
@@ -8,6 +9,8 @@ type EmptyStateProps = {
 };
 
 const EmptyState = ({ title = '표시할 스티커가 없어요', subtitle = '필터를 바꾸거나 다시 시도해 주세요' }: EmptyStateProps) => {
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
@@ -18,7 +21,7 @@ const EmptyState = ({ title = '표시할 스티커가 없어요', subtitle = '�
 
 export default EmptyState;
 
-const styles = StyleSheet.create({
+const styling = (theme: ThemeMode) => StyleSheet.create({
   container: {
     paddingVertical: 40,
     alignItems: 'center',
@@ -26,12 +29,12 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   title: {
-    color: colors.light.MAIN_DARK_TEXT,
+    color: colors[theme].MAIN_DARK_TEXT,
     fontSize: 16,
     fontWeight: '700',
   },
   subtitle: {
-    color: colors.light.GRAY_400,
+    color: colors[theme].GRAY_400,
     fontSize: 13,
   },
 });

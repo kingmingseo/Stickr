@@ -9,7 +9,8 @@ import {
 } from 'react-native';
 import type { PressableProps } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { colors, gradients } from '../constants/colors';
+import { gradients } from '../constants/colors';
+import { ThemeMode, useThemeStore } from '../store/themeStore';
 
 type GradientPreset = keyof typeof gradients;
 
@@ -29,6 +30,8 @@ const GradientButton = ({
   loading,
   ...props
 }: GradientButtonProps) => {
+  useThemeStore(s => s.theme);
+  const styles = styling('light' as ThemeMode);
   const gradientColors = [...gradients[preset]];
 
   return (
@@ -62,7 +65,7 @@ const GradientButton = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styling = (_theme: ThemeMode) => StyleSheet.create({
   button: {
     borderRadius: 12,
     overflow: 'hidden',

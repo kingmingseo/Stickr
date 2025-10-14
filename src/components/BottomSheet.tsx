@@ -8,6 +8,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { colors } from '../constants/colors';
+import { ThemeMode, useThemeStore } from '../store/themeStore';
 
 interface BottomSheetItem {
   label: string;
@@ -31,6 +32,8 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   cancelText = '취소',
   style,
 }) => {
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
   return (
     <Modal
       transparent
@@ -60,7 +63,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styling = (theme: ThemeMode) => StyleSheet.create({
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -70,7 +73,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: colors.light.WHITE,
+    backgroundColor: colors[theme].WHITE,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingTop: 20,
@@ -79,7 +82,7 @@ const styles = StyleSheet.create({
   sheetTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: colors.light.MAIN_DARK_TEXT,
+    color: colors[theme].MAIN_DARK_TEXT,
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -87,11 +90,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: colors.light.GRAY_100,
+    borderBottomColor: colors[theme].GRAY_100,
   },
   sheetItemText: {
     fontSize: 16,
-    color: colors.light.MAIN_DARK_TEXT,
+    color: colors[theme].MAIN_DARK_TEXT,
   },
   sheetCancel: {
     paddingHorizontal: 20,
@@ -100,7 +103,7 @@ const styles = StyleSheet.create({
   },
   sheetCancelText: {
     fontSize: 16,
-    color: colors.light.GRAY_400,
+    color: colors[theme].GRAY_400,
     textAlign: 'center',
   },
 });

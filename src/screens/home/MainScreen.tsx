@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import React, { useState } from 'react';
 import { colors } from '../../constants/colors';
+import { ThemeMode, useThemeStore } from '../../store/themeStore';
 import StickerCardContainer from '../../components/StickerCardContainer';
 import ChipButtonGroup from '../../components/ChipButtonGroup';
 import ChipButton from '../../components/ChipButton';
@@ -27,6 +28,9 @@ const MainScreenContent = () => {
   const stickers: Sticker[] = (data?.pages ?? []).flatMap(page =>
     page && Array.isArray(page.data) ? (page.data as Sticker[]) : [],
   );
+
+  const theme = useThemeStore(s => s.theme);
+  const styles = styling(theme);
 
   return (
     <View style={styles.container}>
@@ -86,13 +90,13 @@ const MainScreen = () => {
 
 export default MainScreen;
 
-const styles = StyleSheet.create({
+const styling = (theme: ThemeMode) => StyleSheet.create({
   container: {
     flex: 1,
   },
   content: {
     flex: 1,
-    backgroundColor: colors.light.WHITE,
+    backgroundColor: colors[theme].WHITE,
     position: 'relative',
   },
   sortRow: {
@@ -107,7 +111,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 12,
     fontSize: 16,
-    color: colors.light.SUB_DARK_TEXT,
+    color: colors[theme].SUB_DARK_TEXT,
   },
   errorContainer: {
     flex: 1,
@@ -117,7 +121,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
-    color: colors.light.RED_500,
+    color: colors[theme].RED_500,
     textAlign: 'center',
   },
 });
