@@ -8,15 +8,17 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
 import useSupabaseSession from '../../hooks/useSupabaseSession';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const OnboardingScreen = () => {
+  const { t } = useTranslation();
   const { width, height } = Dimensions.get('window');
   const pageWidth = width;
   const pages = useMemo(() => [
-    { key: '1', title: '스티커로 스토리를 꾸며보세요', subtitle: '쉽고 빠르게 복사해서 바로 붙여넣기', media: { type: 'image', source: require('../../assets/Stickr.png') } },
-    { key: '2', title: '좋아요/즐겨찾기', subtitle: '마음에 드는 스티커를 저장하고 빠르게 찾기', media: { type: 'image', source: require('../../assets/Stickr.png') } },
-    { key: '3', title: '검색과 카테고리', subtitle: '원하는 분위기의 스티커를 바로 찾아요', media: { type: 'image', source: require('../../assets/Stickr.png') } },
-  ], []);
+    { key: '1', title: t('onboarding1Title'), subtitle: t('onboarding1Subtitle'), media: { type: 'image', source: require('../../assets/Stickr.png') } },
+    { key: '2', title: t('onboarding2Title'), subtitle: t('onboarding2Subtitle'), media: { type: 'image', source: require('../../assets/Stickr.png') } },
+    { key: '3', title: t('onboarding3Title'), subtitle: t('onboarding3Subtitle'), media: { type: 'image', source: require('../../assets/Stickr.png') } },
+  ], [t]);
   const [page, setPage] = useState(0);
   const ref = useRef<FlatList>(null);
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -78,7 +80,7 @@ const OnboardingScreen = () => {
           ))}
         </View>
         <Pressable style={styles.cta} onPress={goNext}>
-          <Text style={styles.ctaText}>{page < pages.length - 1 ? '계속' : '시작하기'}</Text>
+          <Text style={styles.ctaText}>{page < pages.length - 1 ? t('continue') : t('start')}</Text>
         </Pressable>
       </View>
     </View>

@@ -6,10 +6,10 @@ export async function getRecentStickers(
   cursor?: string,
   category?: string,
 ): Promise<{ data: Sticker[]; nextCursor: string | null }> {
-  console.log('호출')
+  console.log('호출');
   let query = supabase
-  .from('sticker')
-  .select('*, user_favorites(user_id)')
+    .from('sticker')
+    .select('*, user_favorites(user_id)')
     .order('auto_increment_id', { ascending: false })
     .limit(limit);
 
@@ -39,8 +39,8 @@ export async function getPopularStickers(
   category?: string,
 ): Promise<{ data: Sticker[]; nextCursor: string | null }> {
   let query = supabase
-  .from('sticker')
-  .select('*, user_favorites(user_id)')
+    .from('sticker')
+    .select('*, user_favorites(user_id)')
     .order('like_count', { ascending: false }) // 좋아요 수 내림차순
     .order('auto_increment_id', { ascending: false }) // 동일 좋아요 시 최신 우선
     .limit(limit);
@@ -99,7 +99,7 @@ export async function getMyFavorites(
     .order('created_at', { ascending: false })
     .order('sticker_id', { ascending: false })
     .limit(limit);
-
+  console.log('즐겨찾기호출');
   if (cursor) {
     // cursor 형태: `${createdAtISO}|${sticker_id}`
     const [createdAtISO, idCursor] = cursor.split('|');

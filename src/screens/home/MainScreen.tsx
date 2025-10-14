@@ -9,22 +9,24 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import DropdownMenu from '../../components/DropdownMenu';
 import { Sticker } from '../../types/sticker';
 import { useInfiniteStickers } from '../../hooks/query/useInfiniteStickers';
-import { categoriesMap, categoryLabels } from '../../constants/categories';
-import { FilterProvider, useFilter } from '../../contexts/FilterContext';
+import { getCategoryLabels, getCategoryValue } from '../../constants/categories';
+import { useFilter } from '../../contexts/FilterContext';
+import { useTranslation } from '../../hooks/useTranslation';
 
 // 메인 컨텐츠 컴포넌트
 const MainScreenContent = () => {
   const { selectedCategory, sortBy, setSelectedCategory, setSortBy } =
     useFilter();
+  const { t, language } = useTranslation();
 
   // showSortMenu는 로컬 상태로 관리
   const [showSortMenu, setShowSortMenu] = useState<boolean>(false);
 
-  const categories = categoryLabels;
+  const categories = getCategoryLabels(language);
+  const categoryValue = getCategoryValue(selectedCategory, language);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteStickers({ category: categoriesMap[selectedCategory], sortBy });
-
+    useInfiniteStickers({ category: categoryValue, sortBy });
   const stickers: Sticker[] = (data?.pages ?? []).flatMap(page =>
     page && Array.isArray(page.data) ? (page.data as Sticker[]) : [],
   );
@@ -38,8 +40,8 @@ const MainScreenContent = () => {
         <DropdownMenu
           visible={showSortMenu}
           options={[
-            { label: '🔥 인기', value: 'popular' },
-            { label: '🚀 최신', value: 'recent' },
+            { label: t('popular'), value: 'popular' },
+            { label: t('recent'), value: 'recent' },
           ]}
           onSelect={value => {
             setSortBy(value as 'popular' | 'recent');
@@ -54,7 +56,7 @@ const MainScreenContent = () => {
           onChipSelect={setSelectedCategory}
           leftComponent={
             <ChipButton
-              label={sortBy === 'popular' ? '🔥 인기' : '🚀 최신'}
+              label={sortBy === 'popular' ? t('popular') : t('recent')}
               isSelected
               onPress={() => setShowSortMenu(prev => !prev)}
               rightIcon={
@@ -81,11 +83,7 @@ const MainScreenContent = () => {
 
 // 메인 컴포넌트
 const MainScreen = () => {
-  return (
-    <FilterProvider>
-      <MainScreenContent />
-    </FilterProvider>
-  );
+  return <MainScreenContent />;
 };
 
 export default MainScreen;

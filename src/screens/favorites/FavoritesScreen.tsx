@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ChipButtonGroup from '../../components/ChipButtonGroup';
 import { colors } from '../../constants/colors';
 import { ThemeMode, useThemeStore } from '../../store/themeStore';
@@ -8,10 +8,13 @@ import useSupabaseSession from '../../hooks/useSupabaseSession';
 import LoginPrompt from '../../components/LoginPrompt';
 import { useInfiniteStickers } from '../../hooks/query/useInfiniteStickers';
 import { Sticker } from '../../types/sticker';
-import { FilterProvider } from '../../contexts/FilterContext';
 
 // 즐겨찾기 컨텐츠 컴포넌트
 const FavoritesScreenContent = () => {
+  useEffect(() => {
+    console.log('FavoritesScreenContent mount');
+    return () => console.log('FavoritesScreenContent unmount');
+  }, []);
   const [selectedCategory, setSelectedCategory] = useState<string>('즐겨찾기');
   const { isAuthenticated } = useSupabaseSession();
 
@@ -20,10 +23,9 @@ const FavoritesScreenContent = () => {
     // 보관함: 'archive',
   };
   const categories = Object.keys(categoriesMap);
-
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteStickers({ category: 'favorites', enabled: isAuthenticated });
-
+    useInfiniteStickers({ category: 'favorites'  });
+    
   const stickers: Sticker[] = (data?.pages ?? []).flatMap(page =>
     page && Array.isArray(page.data) ? (page.data as Sticker[]) : [],
   );
@@ -54,11 +56,7 @@ const FavoritesScreenContent = () => {
 
 // 메인 컴포넌트
 const FavoritesScreen = () => {
-  return (
-    <FilterProvider>
-      <FavoritesScreenContent />
-    </FilterProvider>
-  );
+  return <FavoritesScreenContent />;
 };
 
 export default FavoritesScreen;

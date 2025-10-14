@@ -8,10 +8,10 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 type UseInfiniteStickersOptions = {
   category: string;
   sortBy?: string;
-  enabled?: boolean;
+
 };
 
-export function useInfiniteStickers({ category, sortBy, enabled = true }: UseInfiniteStickersOptions) {
+export function useInfiniteStickers({ category, sortBy }: UseInfiniteStickersOptions) {
   return useInfiniteQuery({
     queryKey: ['stickers', sortBy, category],
     queryFn: async ({ pageParam }: { pageParam: string | undefined }) => {
@@ -26,6 +26,5 @@ export function useInfiniteStickers({ category, sortBy, enabled = true }: UseInf
     },
     initialPageParam: undefined,
     getNextPageParam: lastPage => lastPage?.nextCursor,
-    enabled,
   });
 }

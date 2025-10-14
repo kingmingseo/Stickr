@@ -15,6 +15,8 @@ import BottomSheet from '../../components/BottomSheet';
 import useAuth from '../../hooks/useAuth';
 import useSupabaseSession from '../../hooks/useSupabaseSession';
 import { ThemeMode, useThemeStore } from '../../store/themeStore';
+import { useLanguageStore } from '../../store/languageStore';
+import { useTranslation } from '../../hooks/useTranslation';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../../types/navigation';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -26,18 +28,20 @@ const MyPageScreen = () => {
   const { user, isAuthenticated } = useSupabaseSession();
   const { data: profile } = useGetProfile(user?.id);
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  // const [notifications, setNotifications] = useState(true);
-  const [selectedLanguage, setSelectedLanguage] = useState<
-    '한국어' | 'English'
-  >('한국어');
   const [isLanguageModalVisible, setLanguageModalVisible] = useState(false);
   const [isSupportModalVisible, setSupportModalVisible] = useState(false);
 
   // 테마
   const theme = useThemeStore(s => s.theme);
   const styles = styling(theme);
-
   const toggleTheme = useThemeStore(s => s.toggleTheme);
+
+  // 언어
+  const { language, setLanguage } = useLanguageStore();
+  const { t } = useTranslation();
+  
+  // 현재 언어 표시용
+  const currentLanguageLabel = language === 'korean' ? '한국어' : 'English';
 
   const handleLanguagePress = () => {
     setLanguageModalVisible(true);
@@ -68,7 +72,7 @@ const MyPageScreen = () => {
 
         {/* 설정 */}
         <View style={styles.settingsSection}>
-          <Text style={styles.sectionTitle}>설정</Text>
+          <Text style={styles.sectionTitle}>{t('settings')}</Text>
           <View style={styles.sectionCard}>
             {/* 알림 기능 추가 예정 
             <View style={styles.settingRow}>
@@ -86,15 +90,15 @@ const MyPageScreen = () => {
             */}
 
             <Pressable style={styles.settingRow} onPress={handleLanguagePress}>
-              <Text style={styles.settingLabel}>언어</Text>
+              <Text style={styles.settingLabel}>{t('languageSettings')}</Text>
               <View style={styles.rowRight}>
-                <Text style={styles.valueText}>{selectedLanguage}</Text>
+                <Text style={styles.valueText}>{currentLanguageLabel}</Text>
                 <Text style={styles.chevron}>›</Text>
               </View>
             </Pressable>
 
             <View style={[styles.settingRow, styles.noBorder]}>
-              <Text style={styles.settingLabel}>다크 테마</Text>
+              <Text style={styles.settingLabel}>{t('themeSettings')}</Text>
               <Switch
                 value={theme === 'dark'}
                 onValueChange={toggleTheme}
@@ -110,10 +114,14 @@ const MyPageScreen = () => {
 
         {/* 기타 */}
         <View style={styles.otherSection}>
-          <Text style={styles.sectionTitle}>기타</Text>
+          <Text style={styles.sectionTitle}>
+            {language === 'korean' ? '기타' : 'Others'}
+          </Text>
           <View style={styles.sectionCard}>
             <Pressable style={styles.settingRow} onPress={handleRatingPress}>
-              <Text style={styles.settingLabel}>앱 평가하기</Text>
+              <Text style={styles.settingLabel}>
+                {language === 'korean' ? '앱 평가하기' : 'Rate App'}
+              </Text>
               <Text style={styles.chevron}>›</Text>
             </Pressable>
 
@@ -121,14 +129,16 @@ const MyPageScreen = () => {
               style={[styles.settingRow, styles.noBorder]}
               onPress={handleSupportPress}
             >
-              <Text style={styles.settingLabel}>고객 지원</Text>
+              <Text style={styles.settingLabel}>
+                {language === 'korean' ? '고객 지원' : 'Support'}
+              </Text>
               <Text style={styles.chevron}>›</Text>
             </Pressable>
           </View>
         </View>
 
         <MyPageButton
-          label={isAuthenticated ? '로그아웃' : '로그인 하러 가기'}
+          label={isAuthenticated ? t('logout') : t('login')}
           onPress={() => handleLogoutPress()}
           color={isAuthenticated ? colors[theme].RED_500 : colors[theme].BLUE_500}
           style={styles.logoutButton}
@@ -139,19 +149,19 @@ const MyPageScreen = () => {
       <BottomSheet
         visible={isLanguageModalVisible}
         onClose={() => setLanguageModalVisible(false)}
-        title="언어 선택"
+        title={language === 'korean' ? '언어 선택' : 'Select Language'}
         items={[
           {
             label: '한국어',
             onPress: () => {
-              setSelectedLanguage('한국어');
+              setLanguage('korean');
               setLanguageModalVisible(false);
             },
           },
           {
             label: 'English',
             onPress: () => {
-              setSelectedLanguage('English');
+              setLanguage('english');
               setLanguageModalVisible(false);
             },
           },
@@ -162,17 +172,17 @@ const MyPageScreen = () => {
       <BottomSheet
         visible={isSupportModalVisible}
         onClose={() => setSupportModalVisible(false)}
-        title="고객 지원"
+        title={language === 'korean' ? '고객 지원' : 'Support'}
         items={[
           {
-            label: '이메일 문의',
+            label: language === 'korean' ? '이메일 문의' : 'Email Support',
             onPress: () => {
               Linking.openURL('mailto:support@stickr.com');
               setSupportModalVisible(false);
             },
           },
           {
-            label: '카카오톡 문의',
+            label: language === 'korean' ? '카카오톡 문의' : 'KakaoTalk Support',
             onPress: () => {
               Linking.openURL('https://pf.kakao.com');
               setSupportModalVisible(false);

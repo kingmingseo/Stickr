@@ -9,9 +9,11 @@ import { useSearchStickers } from '../../hooks/query/useSearchStickers';
 import StickerCardContainer from '../../components/StickerCardContainer';
 import { Sticker } from '../../types/sticker';
 import { FilterProvider } from '../../contexts/FilterContext';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const SearchScreen = () => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
 
@@ -48,7 +50,7 @@ const SearchScreen = () => {
         />
         <View style={styles.inputWrapper}>
           <InputField
-            placeholder="키워드나 태그를 검색하세요"
+            placeholder={t('searchPlaceholder')}
             value={searchQuery}
             onChangeText={setSearchQuery}
             onSubmitEditing={handleSearch}
@@ -61,7 +63,7 @@ const SearchScreen = () => {
         <View style={styles.resultsContainer}>
           {isError ? (
             <View style={styles.errorContainer}>
-              <Text style={styles.errorText}>검색 중 오류가 발생했습니다.</Text>
+              <Text style={styles.errorText}>{t('error')}</Text>
             </View>
           ) : (
             <FilterProvider>

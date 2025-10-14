@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { MyPageStackParamList } from '../types/navigation';
 import type { Profile } from '../store/profileStore';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface ProfileCardProps {
   isAuthenticated: boolean;
@@ -16,6 +17,7 @@ interface ProfileCardProps {
 
 const ProfileCard = ({ isAuthenticated, profile }: ProfileCardProps) => {
   const navigation = useNavigation<StackNavigationProp<MyPageStackParamList>>();
+  const { t } = useTranslation();
   
   const theme = useThemeStore(s => s.theme);
   const styles = styling(theme);
@@ -29,14 +31,14 @@ const ProfileCard = ({ isAuthenticated, profile }: ProfileCardProps) => {
             : require('../assets/Stickr.png')
         }
       />
-      <Text style={styles.text}>{profile?.nickname ?? '게스트'}</Text>
+      <Text style={styles.text}>{profile?.nickname ?? t('guest')}</Text>
       {profile?.bio ? (
         <Text style={styles.subText} numberOfLines={2}>
           {profile.bio}
         </Text>
       ) : null}
       <ChipButton
-        label={isAuthenticated ? "내 정보 수정" : "게스트 모드"}
+        label={isAuthenticated ? t('editMyInfo') : t('guestMode')}
         color={colors[theme].GRAY_100}
         style={{ marginRight: 0 }}
         onPress={() => isAuthenticated && navigation.navigate('ProfileEditScreen')}

@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
 import { StickerCard } from './StickerCard';
 import { Sticker } from '../types/sticker';
@@ -54,7 +54,7 @@ const StickerCardContainer = ({
       ) : (
         <FlatList
           data={stickers}
-          keyExtractor={(item, idx) => `${item.id}-${idx}`}
+          keyExtractor={item => item.id}
           numColumns={3}
           showsVerticalScrollIndicator={false}
           columnWrapperStyle={{ gap }}
@@ -83,7 +83,7 @@ const StickerCardContainer = ({
   );
 };
 
-export default memo(StickerCardContainer);
+export default StickerCardContainer;
 
 const styles = StyleSheet.create({
   container: {

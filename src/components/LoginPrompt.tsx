@@ -6,9 +6,11 @@ import { useNavigation } from '@react-navigation/native';
 import GradientButton from './GradientButton';
 import { RootStackParamList } from '../types/navigation';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useTranslation } from '../hooks/useTranslation';
 
 const LoginPrompt = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const { t } = useTranslation();
 
   const handleLoginPress = () => {
     navigation.reset({
@@ -22,12 +24,12 @@ const LoginPrompt = () => {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>로그인이 필요해요</Text>
+        <Text style={styles.title}>{t('loginRequired')}</Text>
         <Text style={styles.description}>
-          즐겨찾기 기능을 사용하려면{'\n'}로그인해주세요
+          {t('loginPrompt')}
         </Text>
         <GradientButton
-          label="로그인하기"
+          label={t('loginButton')}
           onPress={handleLoginPress}
           style={styles.loginButton}
         />

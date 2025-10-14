@@ -18,9 +18,11 @@ import AuthForm from '../../components/AuthForm';
 import { useKeyboard } from '../../hooks/keyboard/useKeyboard';
 import useAuth from '../../hooks/useAuth';
 import OAuthWebView from '../../components/OAuthWebView';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const AuthHomeScreen = () => {
   const [mode, setMode] = useState<'login' | 'signup'>('login');
+  const { t } = useTranslation();
   const { height } = useWindowDimensions();
   const isSmallScreen = height < 740;
   const imageSize = isSmallScreen ? 84 : 120;
@@ -76,15 +78,15 @@ const AuthHomeScreen = () => {
               numberOfLines={2}
               ellipsizeMode="tail"
             >
-              스티커를 활용해 인스타 스토리 꾸미기!
+              {t('appSubtitle')}
             </Text>
           </View>
         </View>
         <View style={[styles.buttonContainer, { gap: verticalGap }]}>
           <TabButton
             options={[
-              { label: '로그인', value: 'login' },
-              { label: '회원가입', value: 'signup' },
+              { label: t('login'), value: 'login' },
+              { label: t('signup'), value: 'signup' },
             ]}
             value={mode}
             onChange={v => setMode(v as 'login' | 'signup')}
@@ -96,8 +98,8 @@ const AuthHomeScreen = () => {
               }
               label={
                 mode === 'signup'
-                  ? 'Apple로 회원가입하기'
-                  : 'Apple로 로그인하기'
+                  ? t('signupWithApple')
+                  : t('loginWithApple')
               }
               size="large"
               backgroundColor={colors.light.BLACK}
@@ -114,8 +116,8 @@ const AuthHomeScreen = () => {
               }
               label={
                 mode === 'signup'
-                  ? 'Google로 회원가입하기'
-                  : 'Google로 로그인하기'
+                  ? t('signupWithGoogle')
+                  : t('loginWithGoogle')
               }
               size="large"
               backgroundColor={colors.light.WHITE}
@@ -130,8 +132,8 @@ const AuthHomeScreen = () => {
           <GeneralCustomButton
             label={
               mode === 'signup'
-                ? '카카오로 회원가입하기'
-                : '카카오로 로그인하기'
+                ? t('signupWithKakao')
+                : t('loginWithKakao')
             }
             size="large"
             backgroundColor="#FEE500"
@@ -142,7 +144,7 @@ const AuthHomeScreen = () => {
               console.log(await signInWithKakao());
             }}
           />
-          {mode === 'login' && <Text style={styles.skip}>또는</Text>}
+          {mode === 'login' && <Text style={styles.skip}>{t('or')}</Text>}
           <AuthForm mode={mode} />
         </View>
       </View>

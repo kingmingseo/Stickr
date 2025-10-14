@@ -20,19 +20,23 @@ import { useEffect } from 'react';
 import BootSplash from 'react-native-bootsplash';
 import { colors } from './src/constants/colors';
 import { useThemeStore } from './src/store/themeStore';
+import { useLanguageStore } from './src/store/languageStore';
+import { useTranslation } from './src/hooks/useTranslation';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 // import { supabase } from './src/api/supabaseClient';
 // import useAuth from './src/hooks/useAuth';
 
-const toastConfig = {
-  successWithInstagram: () => (
-    <View style={styles.toastContainer}>
-      <View style={styles.toastRow}>
-        <View style={styles.titleCol}>
-          <Text style={styles.toastTitle}>복사 완료!</Text>
-          <Text style={styles.toastSubtitle}>인스타그램 </Text>
-          <Text style={styles.toastSubtitle}>바로가기 </Text>
-        </View>
+const ToastConfig = () => {
+  const { t } = useTranslation();
+
+  return {
+    successWithInstagram: () => (
+      <View style={styles.toastContainer}>
+        <View style={styles.toastRow}>
+          <View style={styles.titleCol}>
+            <Text style={styles.toastTitle}>{t('copyComplete')}</Text>
+            <Text style={styles.toastSubtitle}>{t('instagramShortcut')} </Text>
+          </View>
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={async () => {
@@ -81,31 +85,33 @@ const toastConfig = {
       </View>
     </View>
   ),
-  appSuccess: ({ text1 }: any) => (
-    <View style={styles.appToastContainer}>
-      <LinearGradient
-        colors={['#7C3AED', '#4F46E5']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.appToastBg}
-      >
-        <Text style={styles.appToastText}>{text1 || '완료되었습니다'}</Text>
-      </LinearGradient>
-    </View>
-  ),
-  appError: ({ text1 }: any) => (
-    <View style={styles.appToastContainer}>
-      <View style={[styles.appToastBg, { backgroundColor: '#EF4444' }]}>
-        <Text style={styles.appToastText}>{text1 || '오류가 발생했어요'}</Text>
+    appSuccess: ({ text1 }: any) => (
+      <View style={styles.appToastContainer}>
+        <LinearGradient
+          colors={['#7C3AED', '#4F46E5']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.appToastBg}
+        >
+          <Text style={styles.appToastText}>{text1 || t('complete')}</Text>
+        </LinearGradient>
       </View>
-    </View>
-  ),
+    ),
+    appError: ({ text1 }: any) => (
+      <View style={styles.appToastContainer}>
+        <View style={[styles.appToastBg, { backgroundColor: '#EF4444' }]}>
+          <Text style={styles.appToastText}>{text1 || t('errorOccurred')}</Text>
+        </View>
+      </View>
+    ),
+  };
 };
 
 function App() {
   // const { handleOAuthCallback } = useAuth();
   const theme = useThemeStore(s => s.theme);
   const loadTheme = useThemeStore(s => s.loadTheme);
+  const loadLanguage = useLanguageStore(s => s.loadLanguage);
 
   useEffect(() => {
     const prepare = async () => {
@@ -125,7 +131,8 @@ function App() {
 
   useEffect(() => {
     loadTheme();
-  }, [loadTheme]);
+    loadLanguage(); 
+  }, [loadTheme, loadLanguage]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -137,7 +144,7 @@ function App() {
             translucent={false}
           />
           <RootNavigation />
-          <Toast config={toastConfig} topOffset={60} bottomOffset={24} />
+          <Toast config={ToastConfig()} topOffset={60} bottomOffset={24} />
         </SafeAreaView>
       </SafeAreaProvider>
     </QueryClientProvider>

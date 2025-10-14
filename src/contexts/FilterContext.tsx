@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { useLanguageStore } from '../store/languageStore';
+import { getCategoryLabels } from '../constants/categories';
 
 // Context 타입 정의
 interface FilterContextType {
@@ -22,7 +24,10 @@ export const useFilter = () => {
 
 // Provider 컴포넌트
 export const FilterProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('전체');
+  const language = useLanguageStore((state) => state.language);
+  const initialCategory = getCategoryLabels(language)[0]; // '전체' 또는 'All'
+  
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
   const [sortBy, setSortBy] = useState<'recent' | 'popular'>('recent');
 
   const value: FilterContextType = {

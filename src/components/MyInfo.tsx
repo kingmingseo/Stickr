@@ -2,23 +2,25 @@ import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import { colors } from '../constants/colors';
 import { ThemeMode, useThemeStore } from '../store/themeStore';
+import { useTranslation } from '../hooks/useTranslation';
 
 const MyInfo = () => {
   const theme = useThemeStore(s => s.theme);
+  const { t } = useTranslation();
   const styles = styling(theme);
   return (
     <View style={styles.myInfoContainer}>
       <View style={styles.infoContainer}>
         <Text style={[styles.infoNumber, styles.copyNumber]}>100</Text>
-        <Text style={styles.infoText}>복사한 스티커</Text>
+        <Text style={styles.infoText}>{t('copiedStickers')}</Text>
       </View>
       <View style={styles.infoContainer}>
         <Text style={[styles.infoNumber, styles.likeNumber]}>100</Text>
-        <Text style={styles.infoText}>좋아요한 스티커</Text>
+        <Text style={styles.infoText}>{t('likedStickers')}</Text>
       </View>
       <View style={styles.infoContainer}>
         <Text style={[styles.infoNumber, styles.uploadNumber]}>100</Text>
-        <Text style={styles.infoText}>업로드한 스티커</Text>
+        <Text style={styles.infoText}>{t('uploadedStickers')}</Text>
       </View>
     </View>
   );

@@ -11,6 +11,7 @@ import { RootStackParamList } from '../types/navigation';
 import useAuth from '../hooks/useAuth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useModal } from '../hooks/useModal';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface AuthFormProps {
   mode: 'login' | 'signup';
@@ -19,6 +20,7 @@ interface AuthFormProps {
 
 const AuthForm = ({ mode }: AuthFormProps) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const { t } = useTranslation();
   const { isVisible, openModal, closeModal, title, message } = useModal();
   const { control, handleSubmit } = useForm({
     defaultValues: {
@@ -38,8 +40,8 @@ const AuthForm = ({ mode }: AuthFormProps) => {
       // 회원가입 시 비밀번호 확인
       if (mode === 'signup' && password !== passwordConfirm) {
         openModal(
-          '비밀번호 불일치',
-          '비밀번호와 비밀번호 확인이 일치하지 않습니다.',
+          t('passwordMismatch'),
+          t('passwordMismatchMessage'),
         );
         return;
       }
@@ -48,11 +50,11 @@ const AuthForm = ({ mode }: AuthFormProps) => {
         const { error } = await signUpWithEmail({ email, password, nickname });
         if (error) {
           const errorMessage = getErrorMessage(error.message || error);
-          openModal('회원가입 실패', errorMessage);
+          openModal(t('signupFailed'), errorMessage);
         } else {
           openModal(
-            '인증메일 전송',
-            '이메일을 확인하여 계정을 활성화해주세요.',
+            t('verificationEmailSent'),
+            t('verificationEmailMessage'),
           );
         }
       }
@@ -61,7 +63,7 @@ const AuthForm = ({ mode }: AuthFormProps) => {
         const { error } = await signInWithEmail({ email, password });
         if (error) {
           const errorMessage = getErrorMessage(error.message || error);
-          openModal('로그인 실패', errorMessage);
+          openModal(t('loginFailed'), errorMessage);
           return;
         }
 
@@ -76,8 +78,8 @@ const AuthForm = ({ mode }: AuthFormProps) => {
     } catch (err) {
 
       openModal(
-        '오류 발생',
-        '예상치 못한 오류가 발생했습니다. 다시 시도해주세요.',
+        t('errorOccurred'),
+        t('unexpectedError'),
       );
     }
   };
@@ -86,17 +88,17 @@ const AuthForm = ({ mode }: AuthFormProps) => {
     console.log('error', error);
     switch (error) {
       case 'Invalid login credentials':
-        return '이메일 또는 비밀번호가 올바르지 않습니다.';
+        return t('invalidCredentials');
       case 'Email not confirmed':
-        return '이메일 인증이 완료되지 않았습니다. 이메일을 확인해주세요.';
+        return t('emailNotConfirmed');
       case 'User already registered':
-        return '이미 가입된 이메일입니다.';
+        return t('userAlreadyRegistered');
       case 'Password should be at least 6 characters':
-        return '비밀번호는 최소 6자 이상이어야 합니다.';
+        return t('passwordTooShort');
       case 'Unable to validate email address: invalid format':
-        return '올바른 이메일 형식을 입력해주세요.';
+        return t('invalidEmailFormat');
       default:
-        return error || '알 수 없는 오류가 발생했습니다.';
+        return error || t('unknownError');
     }
   };
 
@@ -105,10 +107,10 @@ const AuthForm = ({ mode }: AuthFormProps) => {
       <Controller
         control={control}
         name="email"
-        rules={{ required: '이메일을 입력해주세요' }}
+        rules={{ required: t('emailRequired') }}
         render={({ field: { onChange, onBlur, value } }) => (
           <InputField
-            placeholder="이메일 주소"
+            placeholder={t('email')}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -118,10 +120,10 @@ const AuthForm = ({ mode }: AuthFormProps) => {
       <Controller
         control={control}
         name="password"
-        rules={{ required: '비밀번호를 입력해주세요' }}
+        rules={{ required: t('passwordRequired') }}
         render={({ field: { onChange, onBlur, value } }) => (
           <InputField
-            placeholder="비밀번호"
+            placeholder={t('password')}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -134,10 +136,10 @@ const AuthForm = ({ mode }: AuthFormProps) => {
         <Controller
           control={control}
           name="passwordConfirm"
-          rules={{ required: '비밀번호 확인을 입력해주세요' }}
+          rules={{ required: t('passwordConfirmRequired') }}
           render={({ field: { onChange, onBlur, value } }) => (
             <InputField
-              placeholder="비밀번호 확인"
+              placeholder={t('passwordConfirm')}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
@@ -150,10 +152,10 @@ const AuthForm = ({ mode }: AuthFormProps) => {
         <Controller
           control={control}
           name="nickname"
-          rules={{ required: '닉네임을 입력해주세요 ' }}
+          rules={{ required: t('nicknameRequired') }}
           render={({ field: { onChange, onBlur, value } }) => (
             <InputField
-              placeholder="닉네임"
+              placeholder={t('nickname')}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
@@ -163,16 +165,16 @@ const AuthForm = ({ mode }: AuthFormProps) => {
       )}
       <View style={styles.buttonContainer}>
         <GradientButton
-          label={mode === 'login' ? '로그인' : '회원가입'}
+          label={mode === 'login' ? t('login') : t('signup')}
           preset="purpleBlue"
           onPress={handleSubmit(onSubmit)}
           loading={loading}
         />
         {mode === 'login' && (
-          <Text style={styles.skip}>아이디 혹은 비밀번호를 잊으셨나요?</Text>
+          <Text style={styles.skip}>{t('forgotPassword')}</Text>
         )}
         <GeneralCustomButton
-          label="게스트로 시작하기"
+          label={t('startAsGuest')}
           size="large"
           onPress={() => {
             AsyncStorage.setItem('guestMode', '1');

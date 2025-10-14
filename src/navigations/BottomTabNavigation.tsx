@@ -7,13 +7,18 @@ import MainScreen from '../screens/home/MainScreen';
 import FavoritesScreen from '../screens/favorites/FavoritesScreen';
 import MyPageNavigation from './MypageNavigation';
 import CustomHeader from '../components/CustomHeader';
+import { FilterProvider } from '../contexts/FilterContext';
+import { useTranslation } from '../hooks/useTranslation';
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
 const BottomTabNavigation = () => {
   const theme = useThemeStore(s => s.theme);
+  const { t } = useTranslation();
+  
   return (
-    <Tab.Navigator
+    <FilterProvider>
+      <Tab.Navigator
       screenOptions={{
         headerShown: true,
         header: () => <CustomHeader />,
@@ -37,7 +42,7 @@ const BottomTabNavigation = () => {
           fontSize: 12,
         },
       }}
-    >
+      >
       <Tab.Screen
         name="MainScreen"
         component={MainScreen}
@@ -45,7 +50,7 @@ const BottomTabNavigation = () => {
           tabBarIcon: ({ color }) => (
             <Icon name="home" size={25} color={color} />
           ),
-          tabBarLabel: '홈',
+          tabBarLabel: t('home'),
         }}
       />
       <Tab.Screen
@@ -55,7 +60,7 @@ const BottomTabNavigation = () => {
           tabBarIcon: ({ color }) => (
             <Icon name="heart" size={20} color={color} />
           ),
-          tabBarLabel: '즐겨찾기',
+          tabBarLabel: t('favorites'),
         }}
       />
       <Tab.Screen
@@ -66,7 +71,7 @@ const BottomTabNavigation = () => {
           tabBarIcon: ({ color }) => (
             <Icon name="user" size={20} color={color} />
           ),
-          tabBarLabel: '마이',
+          tabBarLabel: t('myPage'),
         }}
         listeners={({ navigation }) => ({
           tabPress: _e => {
@@ -74,7 +79,8 @@ const BottomTabNavigation = () => {
           },
         })}
       />
-    </Tab.Navigator>
+      </Tab.Navigator>
+    </FilterProvider>
   );
 };
 

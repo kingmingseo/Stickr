@@ -15,10 +15,9 @@ import { colors } from '../constants/colors';
 import { ThemeMode, useThemeStore } from '../store/themeStore';
 import HeartButton from './HeartButton';
 import { Sticker } from '../types/sticker';
-import { toggleFavorite } from '../api/sticker';
-import queryClient from '../api/queryClient';
-import { useFilter } from '../contexts/FilterContext';
-import { categoriesMap } from '../constants/categories';
+import { useToggleHeart } from '../hooks/query/useToggleHeart';
+import { useTranslation } from '../hooks/useTranslation';
+import useSupabaseSession from '../hooks/useSupabaseSession';
 
 export type StickerCardProps = {
   sticker: Sticker;
@@ -34,30 +33,18 @@ export const StickerCard = ({
   onPress,
 }: StickerCardProps) => {
   const theme = useThemeStore(s => s.theme);
+  const { t } = useTranslation();
+  const { isAuthenticated } = useSupabaseSession();
   const styles = styling(theme);
-  const [isHeartPressed, setIsHeartPressed] = useState(sticker.is_favorited);
   const [isCopying, setIsCopying] = useState(false);
   const uri = sticker.image_url;
-  const { selectedCategory, sortBy } = useFilter();
-  const mappedCategory = categoriesMap[selectedCategory] ?? selectedCategory;
-  console.log("render");
-  const handleHeartPress = async () => {
-    const optimistic = !isHeartPressed;
-    setIsHeartPressed(optimistic);
-
-    try {
-      const res = await toggleFavorite(sticker.id);
-      setIsHeartPressed(res.is_favorited);
-      queryClient.invalidateQueries({
-        queryKey: ['stickers', sortBy, mappedCategory],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ['stickers', undefined, 'favorites'],
-      });
-    } catch (e) {
-      setIsHeartPressed(!optimistic);
-    }
+  const { mutate: toggleHeart } = useToggleHeart();
+  const handleHeartPress = () => {
+    toggleHeart({
+      stickerId: sticker.id,
+      currentIsFavorited: sticker.is_favorited ?? false,
+      currentLikeCount: sticker.like_count ?? 0,
+    });
   };
 
   const handleCopyPress = async () => {
@@ -109,8 +96,8 @@ export const StickerCard = ({
           // 성공 토스트
           Toast.show({
             type: 'successWithInstagram',
-            text1: '복사 완료!',
-            text2: '이미지가 클립보드에 복사되었습니다',
+            text1: t('copyComplete'),
+            text2: t('imageCopiedToClipboard'),
             position: 'bottom',
             visibilityTime: 5000,
           });
@@ -127,14 +114,14 @@ export const StickerCard = ({
         await Clipboard.setString(uri);
         Toast.show({
           type: 'info',
-          text1: 'URL 복사',
-          text2: '이미지 URL을 복사했습니다',
+          text1: t('urlCopied'),
+          text2: t('imageUrlCopied'),
         });
       } catch {
         Toast.show({
           type: 'error',
-          text1: '복사 실패',
-          text2: '이미지 복사 중 오류가 발생했습니다',
+          text1: t('copyFailed'),
+          text2: t('copyError'),
         });
       }
     } finally {
@@ -174,10 +161,12 @@ export const StickerCard = ({
           <ActivityIndicator color="#ffffff" />
         </View>
       )}
-      <HeartButton
-        isHeartPressed={isHeartPressed ?? false}
-        handleHeartPress={handleHeartPress}
-      />
+      {isAuthenticated && (
+        <HeartButton
+          isHeartPressed={sticker.is_favorited ?? false}
+          handleHeartPress={handleHeartPress}
+        />
+      )}
     </TouchableOpacity>
   );
 

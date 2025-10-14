@@ -13,6 +13,7 @@ import { MyPageStackParamList } from '../../types/navigation';
 import useGetProfile from '../../hooks/query/useGetProfile';
 import useSupabaseSession from '../../hooks/useSupabaseSession';
 import useUpdateProfile from '../../hooks/query/useUpdateProfile';
+import { useTranslation } from '../../hooks/useTranslation';
 
 // 한글 종성(받침) 유무 판단: 받침 있으면 true
 function hasFinalConsonant(word: string) {
@@ -29,29 +30,35 @@ function hasFinalConsonant(word: string) {
 const IndividualEditScreen = () => {
   const navigation = useNavigation<StackNavigationProp<MyPageStackParamList>>();
   const { params } = useRoute<Route<string, { title: string }>>();
-  const title = params.title.replace('변경', '').trim();
+  const { t, language } = useTranslation();
+  
+  // Extract the actual field type from title
+  const isNickname = params.title === t('changeNickname');
+  const isBio = params.title === t('changeBio');
+  
   const keyboardHeight = useKeyboard(300, -60);
-  const objectParticle = hasFinalConsonant(title) ? '을' : '를';
   const [value, setValue] = useState('');
   const { user } = useSupabaseSession();
   const { data: profile } = useGetProfile(user?.id);
   const updateProfile = useUpdateProfile();
 
   const placeholderValue = (() => {
-    if (title === '닉네임') return profile?.nickname ?? title;
-    if (title === '자기소개') return profile?.bio ?? title;
-    return title;
+    if (isNickname) return profile?.nickname ?? t('nickname');
+    if (isBio) return profile?.bio ?? t('bioPlaceholder');
+    return '';
   })();
+  
+  const titleText = isNickname ? t('enterNewNickname') : t('enterNewBio');
 
   const onSave = async () => {
     if (!profile?.id) return;
-    const patch = title === '닉네임' ? { nickname: value } : { bio: value };
+    const patch = isNickname ? { nickname: value } : { bio: value };
     try {
       await updateProfile.mutateAsync({ id: profile.id, patch });
-      Toast.show({ type: 'appSuccess', text1: '변경 완료' });
+      Toast.show({ type: 'appSuccess', text1: t('updateComplete') });
       navigation.goBack();
     } catch (e) {
-      Toast.show({ type: 'error', text1: '변경 실패' });
+      Toast.show({ type: 'error', text1: t('updateFailed') });
     }
   };
 
@@ -59,7 +66,7 @@ const IndividualEditScreen = () => {
   const styles = styling(theme);
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>새로운 {title}{objectParticle} 입력해주세요</Text>
+      <Text style={styles.title}>{titleText}</Text>
       <InputField placeholder={placeholderValue} value={value} onChangeText={setValue} />
       <Animated.View
         style={[
@@ -68,9 +75,9 @@ const IndividualEditScreen = () => {
         ]}
       >
         {value.length <= 0 ? (
-          <GeneralCustomButton label="저장" size="large" textColor={colors[theme].GRAY_300} disabled={true} />
+          <GeneralCustomButton label={t('save')} size="large" textColor={colors[theme].GRAY_300} disabled={true} />
         ) : (
-          <GradientButton label="저장" size="large" onPress={onSave} />
+          <GradientButton label={t('save')} size="large" onPress={onSave} />
         )}
       </Animated.View>
     </View>

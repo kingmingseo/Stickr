@@ -13,11 +13,13 @@ import BottomSheet from '../../components/BottomSheet';
 import { useImagePicker } from '../../hooks/useImagePicker';
 import { useUpdateProfileImage } from '../../hooks/query/useUpdateProfileImage';
 import Toast from 'react-native-toast-message';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const ProfileEditScreen = () => {
   const navigation = useNavigation<StackNavigationProp<MyPageStackParamList>>();
   const {user} = useSupabaseSession();
   const { data: profile } = useGetProfile(user?.id);
+  const { t } = useTranslation();
   const { openModal, closeModal, isVisible } = useModal();
   const { pickImage } = useImagePicker();
   const updateProfileImageMutation = useUpdateProfileImage();
@@ -36,14 +38,14 @@ const ProfileEditScreen = () => {
         // 성공 메시지 표시
         Toast.show({
           type: 'appSuccess',
-          text1: '프로필 이미지가 업데이트되었습니다.',
+          text1: t('profileImageUpdated'),
         });
       }
     } catch (error) {
       console.error('이미지 업로드 실패:', error);
       Toast.show({
         type: 'appError',
-        text1: '이미지 업로드에 실패했습니다.',
+        text1: t('imageUploadFailed'),
       });
     }
   };
@@ -65,7 +67,7 @@ const ProfileEditScreen = () => {
         <Pressable
           style={styles.cameraButton}
           onPress={() => {
-            openModal('프로필 사진 변경', '프로필 사진을 변경하세요');
+            openModal(t('changeProfilePhoto'), t('changeProfilePhoto'));
           }}
         >
           <Icon name="camera" size={16} color={colors[theme].MAIN_DARK_TEXT} />
@@ -76,18 +78,18 @@ const ProfileEditScreen = () => {
           style={styles.infoContainer}
           onPress={() =>
             navigation.navigate('IndividualEditScreen', {
-              title: '닉네임 변경',
+              title: t('changeNickname'),
             })
           }
         >
-          <Text style={styles.infoLabel}>닉네임</Text>
+          <Text style={styles.infoLabel}>{t('nickname')}</Text>
           <View style={styles.rowRight}>
             <Text style={styles.infoValue}>{profile?.nickname ?? '-'}</Text>
             <Text style={styles.chevron}>›</Text>
           </View>
         </Pressable>
         <View style={styles.infoContainer}>
-          <Text style={styles.infoLabel}>이메일</Text>
+          <Text style={styles.infoLabel}>{t('email')}</Text>
           <View style={styles.rowRight}>
             <Text style={styles.infoValue}>{user?.email ?? '-'}</Text>
             <Text style={styles.chevron} />
@@ -97,35 +99,35 @@ const ProfileEditScreen = () => {
           style={[styles.infoContainer, styles.descriptionContainer]}
           onPress={() =>
             navigation.navigate('IndividualEditScreen', {
-              title: '자기소개 변경',
+              title: t('changeBio'),
             })
           }
         >
-          <Text style={styles.infoLabel}>자기소개</Text>
+          <Text style={styles.infoLabel}>{t('bio')}</Text>
           <View style={styles.rowRight}>
             <Text style={styles.infoValue}>
               {profile?.bio && profile.bio.length > 0
                 ? profile.bio
-                : '자기소개를 입력해보세요'}
+                : t('bioPlaceholder')}
             </Text>
             <Text style={styles.chevron}>›</Text>
           </View>
         </Pressable>
       </View>
       <Pressable style={styles.exitButton}>
-        <Text style={styles.exitButtonText}>회원 탈퇴</Text>
+        <Text style={styles.exitButtonText}>{t('deleteAccount')}</Text>
       </Pressable>
       <BottomSheet
         visible={isVisible}
         onClose={closeModal}
-        title="프로필 사진 변경"
+        title={t('changeProfilePhoto')}
         items={[
           {
-            label: '카메라로 촬영하기',
+            label: t('takePhoto'),
             onPress: () => handleImageSelection('camera'),
           },
           {
-            label: '갤러리에서 선택하기',
+            label: t('chooseFromGallery'),
             onPress: () => handleImageSelection('gallery'),
           },
         ]}
