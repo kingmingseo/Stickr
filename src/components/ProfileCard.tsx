@@ -7,8 +7,8 @@ import MyInfo from './MyInfo';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { MyPageStackParamList } from '../types/navigation';
-import type { Profile } from '../store/profileStore';
 import { useTranslation } from '../hooks/useTranslation';
+import { Profile } from '../types/profile';
 
 interface ProfileCardProps {
   isAuthenticated: boolean;
@@ -43,7 +43,7 @@ const ProfileCard = ({ isAuthenticated, profile }: ProfileCardProps) => {
         style={{ marginRight: 0 }}
         onPress={() => isAuthenticated && navigation.navigate('ProfileEditScreen')}
       />
-      {isAuthenticated && <MyInfo />}
+      {/*{isAuthenticated && <MyInfo />}*/}
     </View>
   );
 };
@@ -53,6 +53,7 @@ export default ProfileCard;
 const styling = (theme: ThemeMode) => StyleSheet.create({
   container: {
     paddingTop: 30,
+    paddingBottom: 30,
     width: '100%',
     backgroundColor: colors[theme].WHITE,
     borderRadius: 16,

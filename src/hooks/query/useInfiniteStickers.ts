@@ -17,11 +17,11 @@ export function useInfiniteStickers({ category, sortBy }: UseInfiniteStickersOpt
     queryFn: async ({ pageParam }: { pageParam: string | undefined }) => {
       const cursor = pageParam;
       if (sortBy === 'recent') {
-        return await getRecentStickers(20, cursor, category);
+        return await getRecentStickers(18, cursor, category);
       } else if (sortBy === 'popular') {
-        return await getPopularStickers(20, cursor, category);
+        return await getPopularStickers(18, cursor, category);
       } else if (category === 'favorites') {
-        return await getMyFavorites(20, cursor);
+        return await getMyFavorites(18, cursor);
       }
     },
     initialPageParam: undefined,

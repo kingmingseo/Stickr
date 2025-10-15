@@ -21,7 +21,7 @@ export const translations = {
     urlCopied: 'URL 복사',
     imageUrlCopied: '이미지 URL을 복사했습니다',
     copyError: '이미지 복사 중 오류가 발생했습니다',
-    instagramShortcut: '인스타그램 바로가기',
+    instagramShortcut: '인스타 바로가기',
 
     // 카테고리
     all: '전체',

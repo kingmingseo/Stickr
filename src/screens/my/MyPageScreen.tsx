@@ -22,7 +22,6 @@ import { RootStackParamList } from '../../types/navigation';
 import { StackNavigationProp } from '@react-navigation/stack';
 import useGetProfile from '../../hooks/query/useGetProfile';
 
-
 const MyPageScreen = () => {
   const { signOut } = useAuth();
   const { user, isAuthenticated } = useSupabaseSession();
@@ -30,6 +29,8 @@ const MyPageScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [isLanguageModalVisible, setLanguageModalVisible] = useState(false);
   const [isSupportModalVisible, setSupportModalVisible] = useState(false);
+  const [isContributorsModalVisible, setContributorsModalVisible] =
+    useState(false);
 
   // 테마
   const theme = useThemeStore(s => s.theme);
@@ -39,7 +40,7 @@ const MyPageScreen = () => {
   // 언어
   const { language, setLanguage } = useLanguageStore();
   const { t } = useTranslation();
-  
+
   // 현재 언어 표시용
   const currentLanguageLabel = language === 'korean' ? '한국어' : 'English';
 
@@ -53,6 +54,10 @@ const MyPageScreen = () => {
 
   const handleSupportPress = () => {
     setSupportModalVisible(true);
+  };
+
+  const handleContributorsPress = () => {
+    setContributorsModalVisible(true);
   };
 
   const handleLogoutPress = () => {
@@ -125,12 +130,19 @@ const MyPageScreen = () => {
               <Text style={styles.chevron}>›</Text>
             </Pressable>
 
-            <Pressable
-              style={[styles.settingRow, styles.noBorder]}
-              onPress={handleSupportPress}
-            >
+            <Pressable style={styles.settingRow} onPress={handleSupportPress}>
               <Text style={styles.settingLabel}>
                 {language === 'korean' ? '고객 지원' : 'Support'}
+              </Text>
+              <Text style={styles.chevron}>›</Text>
+            </Pressable>
+
+            <Pressable
+              style={[styles.settingRow, styles.noBorder]}
+              onPress={handleContributorsPress}
+            >
+              <Text style={styles.settingLabel}>
+                {language === 'korean' ? '도움을 주신 분' : 'Contributors'}
               </Text>
               <Text style={styles.chevron}>›</Text>
             </Pressable>
@@ -140,7 +152,9 @@ const MyPageScreen = () => {
         <MyPageButton
           label={isAuthenticated ? t('logout') : t('login')}
           onPress={() => handleLogoutPress()}
-          color={isAuthenticated ? colors[theme].RED_500 : colors[theme].BLUE_500}
+          color={
+            isAuthenticated ? colors[theme].RED_500 : colors[theme].BLUE_500
+          }
           style={styles.logoutButton}
         />
       </ScrollView>
@@ -177,15 +191,34 @@ const MyPageScreen = () => {
           {
             label: language === 'korean' ? '이메일 문의' : 'Email Support',
             onPress: () => {
-              Linking.openURL('mailto:support@stickr.com');
+              Linking.openURL('mailto:enommiski@gmail.com');
               setSupportModalVisible(false);
             },
           },
+        ]}
+      />
+
+      {/* 도움을 주신 분 바텀시트 */}
+      <BottomSheet
+        visible={isContributorsModalVisible}
+        onClose={() => setContributorsModalVisible(false)}
+        title={language === 'korean' ? '도움을 주신 분' : 'Contributors'}
+        items={[
           {
-            label: language === 'korean' ? '카카오톡 문의' : 'KakaoTalk Support',
+            label:
+              language === 'korean' ? '장도콩님 블로그' : 'JangDoKong Blog',
             onPress: () => {
-              Linking.openURL('https://pf.kakao.com');
-              setSupportModalVisible(false);
+              Linking.openURL(
+                'https://m.blog.naver.com/PostList.naver?blogId=ehgus0418',
+              );
+              setContributorsModalVisible(false);
+            },
+          },
+          {
+            label: language === 'korean' ? 'mi2log님 블로그' : 'mi2log Blog',
+            onPress: () => {
+              Linking.openURL('https://blog.naver.com/h____mi2');
+              setContributorsModalVisible(false);
             },
           },
         ]}
@@ -196,72 +229,73 @@ const MyPageScreen = () => {
 
 export default MyPageScreen;
 
-const styling = (theme: ThemeMode) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors[theme].GRAY_100,
-  },
-  scrollContent: {
-    paddingTop: 20,
-    paddingBottom: 40,
-    paddingHorizontal: 14,
-  },
-  settingsSection: {
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  otherSection: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors[theme].MAIN_DARK_TEXT,
-    marginBottom: 12,
-    marginLeft: 4,
-  },
-  sectionCard: {
-    backgroundColor: colors[theme].WHITE,
-    borderRadius: 16,
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-  },
-  settingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 14,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors[theme].GRAY_200,
-  },
-  noBorder: {
-    borderBottomWidth: 0,
-  },
-  rowRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  settingLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors[theme].MAIN_DARK_TEXT,
-  },
-  valueText: {
-    fontSize: 14,
-    color: colors[theme].GRAY_400,
-    marginRight: 4,
-  },
-  chevron: {
-    fontSize: 30,
-    color: colors[theme].GRAY_400,
-    marginLeft: 8,
-    marginBottom: 5,
-  },
-  settingButton: {
-    marginBottom: 8,
-  },
-  logoutButton: {
-    marginTop: 20,
-  },
-});
+const styling = (theme: ThemeMode) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors[theme].GRAY_100,
+    },
+    scrollContent: {
+      paddingTop: 20,
+      paddingBottom: 40,
+      paddingHorizontal: 14,
+    },
+    settingsSection: {
+      marginTop: 20,
+      marginBottom: 10,
+    },
+    otherSection: {
+      marginBottom: 20,
+    },
+    sectionTitle: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: colors[theme].MAIN_DARK_TEXT,
+      marginBottom: 12,
+      marginLeft: 4,
+    },
+    sectionCard: {
+      backgroundColor: colors[theme].WHITE,
+      borderRadius: 16,
+      paddingHorizontal: 14,
+      paddingVertical: 6,
+    },
+    settingRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: 14,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: colors[theme].GRAY_200,
+    },
+    noBorder: {
+      borderBottomWidth: 0,
+    },
+    rowRight: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    settingLabel: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors[theme].MAIN_DARK_TEXT,
+    },
+    valueText: {
+      fontSize: 14,
+      color: colors[theme].GRAY_400,
+      marginRight: 4,
+    },
+    chevron: {
+      fontSize: 30,
+      color: colors[theme].GRAY_400,
+      marginLeft: 8,
+      marginBottom: 5,
+    },
+    settingButton: {
+      marginBottom: 8,
+    },
+    logoutButton: {
+      marginTop: 20,
+    },
+  });

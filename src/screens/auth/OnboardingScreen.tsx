@@ -12,7 +12,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 
 const OnboardingScreen = () => {
   const { t } = useTranslation();
-  const { width, height } = Dimensions.get('window');
+  const { width } = Dimensions.get('window');
   const pageWidth = width;
   const pages = useMemo(() => [
     { key: '1', title: t('onboarding1Title'), subtitle: t('onboarding1Subtitle'), media: { type: 'image', source: require('../../assets/Stickr.png') } },

@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import InputField from './InputField';
 import { useForm, Controller } from 'react-hook-form';
@@ -16,9 +16,10 @@ import { useTranslation } from '../hooks/useTranslation';
 interface AuthFormProps {
   mode: 'login' | 'signup';
   onSubmit?: (data: any) => void;
+  onFieldFocusForKeyboard?: (rect: { y: number; height: number }) => void;
 }
 
-const AuthForm = ({ mode }: AuthFormProps) => {
+const AuthForm = ({ mode, onFieldFocusForKeyboard }: AuthFormProps) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const { t } = useTranslation();
   const { isVisible, openModal, closeModal, title, message } = useModal();
@@ -114,6 +115,7 @@ const AuthForm = ({ mode }: AuthFormProps) => {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
+            onMeasureForKeyboard={onFieldFocusForKeyboard}
           />
         )}
       />
@@ -128,6 +130,7 @@ const AuthForm = ({ mode }: AuthFormProps) => {
             onChangeText={onChange}
             value={value}
             secureTextEntry
+            onMeasureForKeyboard={onFieldFocusForKeyboard}
           />
         )}
       />
@@ -144,6 +147,7 @@ const AuthForm = ({ mode }: AuthFormProps) => {
               onChangeText={onChange}
               value={value}
               secureTextEntry
+              onMeasureForKeyboard={onFieldFocusForKeyboard}
             />
           )}
         />
@@ -159,6 +163,7 @@ const AuthForm = ({ mode }: AuthFormProps) => {
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
+              onMeasureForKeyboard={onFieldFocusForKeyboard}
             />
           )}
         />
@@ -171,8 +176,6 @@ const AuthForm = ({ mode }: AuthFormProps) => {
           loading={loading}
         />
         {mode === 'login' && (
-          <Text style={styles.skip}>{t('forgotPassword')}</Text>
-        )}
         <GeneralCustomButton
           label={t('startAsGuest')}
           size="large"
@@ -183,7 +186,7 @@ const AuthForm = ({ mode }: AuthFormProps) => {
               routes: [{ name: 'BottomTabNavigation' }],
             });
           }}
-        />
+        />)}
       </View>
 
       {/* 에러 팝업 */}

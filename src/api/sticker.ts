@@ -14,7 +14,7 @@ export async function getRecentStickers(
     .limit(limit);
 
   // 조건부 체이닝으로 조건 추가
-  if (category && category !== '전체') query = query.eq('category', category);
+  if (category && category !== 'all') query = query.eq('category', category);
   if (cursor) query = query.lt('auto_increment_id', cursor);
 
   const { data, error } = await query;
@@ -46,7 +46,7 @@ export async function getPopularStickers(
     .limit(limit);
 
   // 조건부 체이닝으로 조건 추가
-  if (category && category !== '전체') query = query.eq('category', category);
+  if (category && category !== 'all') query = query.eq('category', category);
   if (cursor) {
     // 복합 커서: like_count|auto_increment_id
     const [likeStr, idStr] = cursor.split('|');

@@ -7,6 +7,7 @@ import {
 } from '@react-native-google-signin/google-signin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useModal } from './useModal';
+import CookieManager from '@react-native-cookies/cookies';
 
 type AuthError = {
   message: string;
@@ -81,13 +82,88 @@ function useAuth() {
     try {
       clearAuthError();
       setLoading(true);
+
+      // Supabase 로그아웃
       const { error } = await supabase.auth.signOut();
       if (error) {
         setAuthError(normalizeToAuthError(error));
         return { error };
       }
+      //WebView 쿠키 삭제 (카카오 OAuth 세션 정리)
+      try {
+        await CookieManager.clearAll();
+        console.log('WebView 쿠키 삭제 완료');
+      } catch (cookieError) {
+        console.error('쿠키 삭제 에러:', cookieError);
+      }
+      // 온보딩 상태 보존
+      const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
+
+      // 로컬 캐시 완전히 클리어
+      queryClient.clear();
+      await AsyncStorage.clear();
+
+      // 온보딩 상태 복원
+      if (hasSeenOnboarding) {
+        await AsyncStorage.setItem('hasSeenOnboarding', hasSeenOnboarding);
+      }
+
       return {};
     } catch (error) {
+      setAuthError(normalizeToAuthError(error));
+      return { error };
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function deleteAccount(): Promise<{ error?: any }> {
+    try {
+      clearAuthError();
+      setLoading(true);
+
+      // 1. 현재 사용자 정보 가져오기
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        const e = new Error('로그인된 사용자가 없습니다.');
+        setAuthError(normalizeToAuthError(e));
+        return { error: e };
+      }
+      // 2. Supabase RPC 함수 호출하여 계정 삭제
+      const { error: rpcError } = await supabase.rpc('delete_user');
+
+      if (rpcError) {
+        console.error('계정 삭제 RPC 에러:', rpcError);
+      }
+
+      // 3. Supabase Auth 세션 로그아웃 (OAuth 세션 정리)
+      await supabase.auth.signOut();
+
+      // 4. WebView 쿠키 삭제 (카카오 OAuth 세션 정리)
+      try {
+        await CookieManager.clearAll();
+        console.log('WebView 쿠키 삭제 완료');
+      } catch (cookieError) {
+        console.error('쿠키 삭제 에러:', cookieError);
+      }
+
+      // 5. 온보딩 상태 보존
+      const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
+
+      // 6. 로컬 캐시 클리어
+      queryClient.clear();
+      await AsyncStorage.clear();
+
+      // 7. 온보딩 상태 복원
+      if (hasSeenOnboarding) {
+        await AsyncStorage.setItem('hasSeenOnboarding', hasSeenOnboarding);
+      }
+
+      return {};
+    } catch (error) {
+      console.error('회원 탈퇴 에러:', error);
       setAuthError(normalizeToAuthError(error));
       return { error };
     } finally {
@@ -362,6 +438,7 @@ function useAuth() {
     signInWithEmail,
     signUpWithEmail,
     signOut,
+    deleteAccount,
     signInWithGoogle,
     signInWithKakao,
     handleOAuthCallback,

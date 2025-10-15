@@ -27,7 +27,11 @@ const AuthHomeScreen = () => {
   const isSmallScreen = height < 740;
   const imageSize = isSmallScreen ? 84 : 120;
   const verticalGap = isSmallScreen ? 6 : 12;
-  const keyboardHeight = useKeyboard(300, 150);
+  const [keyboardHeight, onFieldFocusForKeyboard] = useKeyboard({
+    duration: 300,
+    extraOffset: 200,
+    smart: true,
+  });
   const {
     signInWithGoogle,
     loading,
@@ -91,34 +95,26 @@ const AuthHomeScreen = () => {
             value={mode}
             onChange={v => setMode(v as 'login' | 'signup')}
           />
-          {Platform.OS === 'ios' && (
+          {Platform.OS === 'ios' && mode === 'login' && (
             <GeneralCustomButton
               leftIcon={
                 <Icon name="apple" size={18} color={colors.light.WHITE} />
               }
-              label={
-                mode === 'signup'
-                  ? t('signupWithApple')
-                  : t('loginWithApple')
-              }
+              label={t('loginWithApple')}
               size="large"
               backgroundColor={colors.light.BLACK}
               textColor={colors.light.WHITE}
               onPress={() => {}}
             />
           )}
-          {Platform.OS === 'android' && (
+          {Platform.OS === 'android' && mode === 'login' && (
             <GeneralCustomButton
               leftIcon={
                 <View style={styles.googleIconContainer}>
                   <Icon name="google" size={20} color="#4285F4" />
                 </View>
               }
-              label={
-                mode === 'signup'
-                  ? t('signupWithGoogle')
-                  : t('loginWithGoogle')
-              }
+              label={t('loginWithGoogle')}
               size="large"
               backgroundColor={colors.light.WHITE}
               textColor={colors.light.MAIN_DARK_TEXT}
@@ -129,23 +125,21 @@ const AuthHomeScreen = () => {
               }}
             />
           )}
-          <GeneralCustomButton
-            label={
-              mode === 'signup'
-                ? t('signupWithKakao')
-                : t('loginWithKakao')
-            }
-            size="large"
-            backgroundColor="#FEE500"
-            textColor="rgba(0, 0, 0, 0.85)"
-            leftIcon={<KakaoIcon width={18} height={18} />}
-            onPress={async () => {
-              console.log('카카오로 로그인 시작');
-              console.log(await signInWithKakao());
-            }}
-          />
+          {mode === 'login' && (
+            <GeneralCustomButton
+              label={t('loginWithKakao')}
+              size="large"
+              backgroundColor="#FEE500"
+              textColor="rgba(0, 0, 0, 0.85)"
+              leftIcon={<KakaoIcon width={18} height={18} />}
+              onPress={async () => {
+                console.log('카카오로 로그인 시작');
+                console.log(await signInWithKakao());
+              }}
+            />
+          )}
           {mode === 'login' && <Text style={styles.skip}>{t('or')}</Text>}
-          <AuthForm mode={mode} />
+          <AuthForm mode={mode} onFieldFocusForKeyboard={onFieldFocusForKeyboard} />
         </View>
       </View>
 
@@ -163,60 +157,61 @@ const AuthHomeScreen = () => {
 
 export default AuthHomeScreen;
 
-const styling = (theme: ThemeMode) => StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 16,
-    backgroundColor: colors[theme].WHITE,
-  },
-  imageContainer: {
-    flex: 0.5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  image: {
-    width: 120,
-    height: 120,
-  },
-  buttonContainer: {
-    flex: 1,
-  },
-  skip: {
-    textAlign: 'center',
-    color: '#8E8E8E',
-  },
-  formContainer: {
-    flex: 0.4,
-  },
-  guestButton: {
-    color: colors[theme].GRAY_100,
-  },
-  imageTextContainer: {
-    marginTop: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  imageText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors[theme].MAIN_DARK_TEXT,
-    textAlign: 'center',
-    marginBottom: 4,
-  },
-  imageSubText: {
-    fontSize: 16,
-    color: colors[theme].GRAY_400,
-    textAlign: 'center',
-    lineHeight: 22,
-  },
-  googleButton: {
-    borderWidth: 0.5,
-    borderColor: '#dadce0',
-  },
-  googleIconContainer: {
-    width: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
+const styling = (theme: ThemeMode) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingHorizontal: 16,
+      backgroundColor: colors[theme].WHITE,
+    },
+    imageContainer: {
+      flex: 0.4,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    image: {
+      width: 120,
+      height: 120,
+    },
+    buttonContainer: {
+      flex: 1,
+    },
+    skip: {
+      textAlign: 'center',
+      color: '#8E8E8E',
+    },
+    formContainer: {
+      flex: 0.4,
+    },
+    guestButton: {
+      color: colors[theme].GRAY_100,
+    },
+    imageTextContainer: {
+      marginTop: 12,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    imageText: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: colors[theme].MAIN_DARK_TEXT,
+      textAlign: 'center',
+      marginBottom: 4,
+    },
+    imageSubText: {
+      fontSize: 16,
+      color: colors[theme].GRAY_400,
+      textAlign: 'center',
+      lineHeight: 22,
+    },
+    googleButton: {
+      borderWidth: 0.5,
+      borderColor: '#dadce0',
+    },
+    googleIconContainer: {
+      width: 20,
+      height: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });

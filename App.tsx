@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   toastContainer: {
-    width: '35%',
+    width: '42%',
     alignSelf: 'flex-end',
     height: 120,
     backgroundColor: colors.light.PURPLE_400,

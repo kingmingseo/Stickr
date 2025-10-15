@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import DropdownMenu from '../../components/DropdownMenu';
 import { Sticker } from '../../types/sticker';
 import { useInfiniteStickers } from '../../hooks/query/useInfiniteStickers';
-import { getCategoryLabels, getCategoryValue } from '../../constants/categories';
+import { getCategoryLabels, getCategoryApiValue } from '../../constants/categories';
 import { useFilter } from '../../contexts/FilterContext';
 import { useTranslation } from '../../hooks/useTranslation';
 
@@ -19,11 +19,10 @@ const MainScreenContent = () => {
     useFilter();
   const { t, language } = useTranslation();
 
-  // showSortMenu는 로컬 상태로 관리
   const [showSortMenu, setShowSortMenu] = useState<boolean>(false);
 
   const categories = getCategoryLabels(language);
-  const categoryValue = getCategoryValue(selectedCategory, language);
+  const categoryValue = getCategoryApiValue(selectedCategory, language);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteStickers({ category: categoryValue, sortBy });

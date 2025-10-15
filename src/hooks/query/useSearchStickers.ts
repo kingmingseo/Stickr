@@ -4,7 +4,7 @@ import { searchStickers } from '../../api/sticker';
 export function useSearchStickers(query: string, enabled: boolean = true) {
   return useInfiniteQuery({
     queryKey: ['searchStickers', query],
-    queryFn: ({ pageParam }: { pageParam: string | undefined }) => searchStickers(query, 20, pageParam),
+    queryFn: ({ pageParam }: { pageParam: string | undefined }) => searchStickers(query, 18, pageParam),
     initialPageParam: undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     enabled: enabled && query.trim().length > 0,

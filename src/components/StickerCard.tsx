@@ -179,7 +179,7 @@ const styling = (theme: ThemeMode) =>
       position: 'relative',
     },
     image: {
-      backgroundColor: colors[theme].GRAY_100,
+      backgroundColor: colors[theme].GRAY_200,
     },
     overlay: {
       position: 'absolute',

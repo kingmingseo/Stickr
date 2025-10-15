@@ -13,6 +13,7 @@ import { ThemeMode, useThemeStore } from '../store/themeStore';
 interface BottomSheetItem {
   label: string;
   onPress: () => void;
+  color?: string;
 }
 
 interface BottomSheetProps {
@@ -43,7 +44,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
     >
       <Pressable style={styles.modalOverlay} onPress={onClose} />
       <View style={[styles.bottomSheet, style]}>
-        <Text style={styles.sheetTitle}>{title}</Text>
+        <Text style={styles.sheetTitle} numberOfLines={1} ellipsizeMode="tail">{title}</Text>
         
         {items.map((item, index) => (
           <Pressable
@@ -51,7 +52,9 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
             style={styles.sheetItem}
             onPress={item.onPress}
           >
-            <Text style={styles.sheetItemText}>{item.label}</Text>
+            <Text style={[styles.sheetItemText, item.color && { color: item.color }]}>
+              {item.label}
+            </Text>
           </Pressable>
         ))}
         

@@ -5,7 +5,7 @@ import {
   TextInputProps,
   View,
 } from 'react-native';
-import React, { Ref } from 'react';
+import React, { Ref, useRef } from 'react';
 import { colors } from '../constants/colors';
 import { ThemeMode, useThemeStore } from '../store/themeStore';
 
@@ -14,19 +14,23 @@ interface InputFieldProps extends TextInputProps {
   error?: string;
   touched?: boolean;
   disabled?: boolean;
+  onMeasureForKeyboard?: (rect: { y: number; height: number }) => void;
 }
 
 const InputField = ({
   error,
   touched,
   disabled = false,
+  onMeasureForKeyboard,
   ...props
 }: InputFieldProps) => {
   const theme = useThemeStore(s => s.theme);
   const styles = styling(theme);
+  const inputRef = useRef<TextInput | null>(null);
   return (
     <View>
       <TextInput
+        ref={inputRef}
         {...props}
         placeholderTextColor={colors[theme].GRAY_400}
         style={[
@@ -35,6 +39,15 @@ const InputField = ({
           touched && Boolean(error) && styles.inputError,
           disabled && styles.disabled,
         ]}
+        onFocus={e => {
+          props.onFocus?.(e);
+          // 절대 좌표로 입력 위치 측정 (지연 호출로 레이아웃 안정화)
+          requestAnimationFrame(() => {
+            inputRef.current?.measureInWindow?.((x, y, width, height) => {
+              onMeasureForKeyboard?.({ y, height });
+            });
+          });
+        }}
         spellCheck={false}
         autoCorrect={false}
         autoCapitalize="none"

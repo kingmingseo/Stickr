@@ -21,7 +21,7 @@ interface MyPageButtonProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const MyPageButton = ({ label, onPress, color, gradientColors }: MyPageButtonProps) => {
+const MyPageButton = ({ label, onPress, color, gradientColors, style }: MyPageButtonProps) => {
   const theme = useThemeStore(s => s.theme);
   const styles = styling(theme);
   const renderText = () => {
@@ -45,7 +45,7 @@ const MyPageButton = ({ label, onPress, color, gradientColors }: MyPageButtonPro
   };
 
   return (
-    <Pressable style={styles.container} onPress={onPress}>
+    <Pressable style={[styles.container, style]} onPress={onPress}>
       {renderText()}
     </Pressable>
   );
