@@ -1,5 +1,5 @@
 import { StyleSheet, View, Text } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { colors } from '../../constants/colors';
 import { ThemeMode, useThemeStore } from '../../store/themeStore';
 import InputField from '../../components/InputField';
@@ -7,15 +7,17 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { useSearchStickers } from '../../hooks/query/useSearchStickers';
 import StickerCardContainer from '../../components/StickerCardContainer';
-import { Sticker } from '../../types/sticker';
 import { FilterProvider } from '../../contexts/FilterContext';
 import { useTranslation } from '../../hooks/useTranslation';
+import { useQueryClient } from '@tanstack/react-query';
+import { Sticker } from '../../types/sticker';
 
 const SearchScreen = () => {
   const navigation = useNavigation();
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
+  const [activeQuery, setActiveQuery] = useState(''); // 실제 검색 중인 쿼리
 
   const {
     data,
@@ -24,11 +26,25 @@ const SearchScreen = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useSearchStickers(searchQuery, isSearching);
+  } = useSearchStickers(activeQuery);
+
+  // 검색어가 변경되면 이전 검색 초기화
+  useEffect(() => {
+    if (searchQuery !== activeQuery) {
+      setActiveQuery(''); // 이전 검색 결과 숨김
+    }
+  }, [searchQuery, activeQuery]);
 
   const handleSearch = () => {
-    if (searchQuery.trim()) {
-      setIsSearching(true);
+    const trimmedQuery = searchQuery.trim();
+    if (trimmedQuery) {
+      // 이전 검색 캐시 완전 제거
+      queryClient.removeQueries({ 
+        queryKey: ['searchStickers'],
+        exact: false 
+      });
+      // 새 검색 시작
+      setActiveQuery(trimmedQuery);
     }
   };
 
@@ -59,7 +75,7 @@ const SearchScreen = () => {
         </View>
       </View>
 
-      {isSearching && (
+      {activeQuery && (
         <View style={styles.resultsContainer}>
           {isError ? (
             <View style={styles.errorContainer}>

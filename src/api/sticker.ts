@@ -127,33 +127,45 @@ export async function getMyFavorites(
   return { data: stickers, nextCursor };
 }
 
-// 검색 API 함수
+// 검색 API 함수  
 export async function searchStickers(
   query: string,
   limit: number = 20,
   cursor?: string,
 ): Promise<{ data: Sticker[]; nextCursor: string | null }> {
-  // 태그는 text[] 이므로 ilike 사용 불가. 제목/설명은 ilike, 태그는 contains(cs)로 처리
-  // 주의: tags.cs.{q} 는 태그 요소가 q와 '정확히 일치'해야 매치됩니다.
+  console.log('검색 API 호출:', { query, cursor });
+  
+  // 검색 조건
   const orFilter = `title.ilike.%${query}%,description.ilike.%${query}%,tags.cs.{${query}}`;
 
   let supabaseQuery = supabase
     .from('sticker')
     .select('*, user_favorites(user_id)')
     .or(orFilter)
-    .limit(limit);
+    .order('like_count', { ascending: false })
+    .order('auto_increment_id', { ascending: false });
 
+  // cursor 페이지네이션
   if (cursor) {
     const [likeStr, idStr] = cursor.split('|');
     const likeCursor = parseInt(likeStr);
     const idCursor = parseInt(idStr);
+    
+    // 좋아요 수가 작거나, 같으면서 ID가 작은 것만
     supabaseQuery = supabaseQuery.or(
       `like_count.lt.${likeCursor},and(like_count.eq.${likeCursor},auto_increment_id.lt.${idCursor})`,
     );
   }
 
+  supabaseQuery = supabaseQuery.limit(limit);
+
   const { data, error } = await supabaseQuery;
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error('검색 에러:', error);
+    throw new Error(error.message);
+  }
+
+  console.log('검색 결과:', data?.length, '개');
 
   const stickers = (data || []).map((row: any) => ({
     ...(row as Sticker),
@@ -161,12 +173,25 @@ export async function searchStickers(
       Array.isArray(row.user_favorites) && row.user_favorites.length > 0,
   }));
 
+  // 중복 확인 로그
+  const ids = stickers.map(s => s.id);
+  const uniqueIds = new Set(ids);
+  if (ids.length !== uniqueIds.size) {
+    console.warn('⚠️ 중복 ID 발견!', {
+      total: ids.length,
+      unique: uniqueIds.size,
+      duplicates: ids.filter((id, index) => ids.indexOf(id) !== index),
+    });
+  }
+
   const nextCursor =
     stickers.length === limit
       ? `${stickers[stickers.length - 1]?.like_count}|${
           stickers[stickers.length - 1]?.auto_increment_id
         }`
       : null;
+
+  console.log('nextCursor:', nextCursor);
 
   return { data: stickers, nextCursor };
 }

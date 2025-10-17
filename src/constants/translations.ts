@@ -152,6 +152,10 @@ export const translations = {
     searchPlaceholder: '스티커 검색...',
     noResults: '검색 결과가 없습니다',
 
+    // 기타
+    termsOfService: '서비스 이용약관',
+    privacyPolicy: '개인정보처리방침',
+
     // 공통
     cancel: '취소',
     confirm: '확인',
@@ -304,6 +308,10 @@ export const translations = {
     search: 'Search',
     searchPlaceholder: 'Search stickers...',
     noResults: 'No results found',
+
+    // Others
+    termsOfService: 'Terms of Service',
+    privacyPolicy: 'Privacy Policy',
 
     // Common
     cancel: 'Cancel',

@@ -64,6 +64,14 @@ const MyPageScreen = () => {
     navigation.navigate('GboardOnboardingScreen');
   };
 
+  const handleTermsPress = () => {
+    Linking.openURL('https://stickr-uploader.vercel.app/terms');
+  };
+
+  const handlePrivacyPress = () => {
+    Linking.openURL('https://stickr-uploader.vercel.app/privacy');
+  };
+
   const handleLogoutPress = () => {
     if (isAuthenticated) {
       signOut();
@@ -166,6 +174,17 @@ const MyPageScreen = () => {
           }
           style={styles.logoutButton}
         />
+
+        {/* 하단 약관 링크 */}
+        <View style={styles.footer}>
+          <Pressable onPress={handleTermsPress}>
+            <Text style={styles.footerLink}>{t('termsOfService')}</Text>
+          </Pressable>
+          <Text style={styles.footerDivider}>  |  </Text>
+          <Pressable onPress={handlePrivacyPress}>
+            <Text style={styles.footerLink}>{t('privacyPolicy')}</Text>
+          </Pressable>
+        </View>
       </ScrollView>
 
       {/* 언어 선택 바텀시트 */}
@@ -227,6 +246,13 @@ const MyPageScreen = () => {
             label: language === 'korean' ? 'mi2log님 블로그' : 'mi2log Blog',
             onPress: () => {
               Linking.openURL('https://blog.naver.com/h____mi2');
+              setContributorsModalVisible(false);
+            },
+          },
+          {
+            label: language === 'korean' ? 'candydrop님 블로그' : 'candydrop Blog',
+            onPress: () => {
+              Linking.openURL('https://blog.naver.com/candy_drop');
               setContributorsModalVisible(false);
             },
           },
@@ -306,5 +332,21 @@ const styling = (theme: ThemeMode) =>
     },
     logoutButton: {
       marginTop: 20,
+    },
+    footer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 30,
+      marginBottom: 10,
+    },
+    footerLink: {
+      fontSize: 12,
+      color: colors[theme].GRAY_400,
+      textDecorationLine: 'underline',
+    },
+    footerDivider: {
+      fontSize: 12,
+      color: colors[theme].GRAY_400,
     },
   });
