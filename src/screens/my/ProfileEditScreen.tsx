@@ -71,12 +71,19 @@ const ProfileEditScreen = () => {
       // 루트 네비게이터로 이동
       const rootNavigation =
         navigation.getParent<StackNavigationProp<RootStackParamList>>();
-      if (rootNavigation) {
-        rootNavigation.reset({
-          index: 0,
-          routes: [{ name: 'AuthNavigation' }],
-        });
-      }
+      Toast.show({
+        type: 'appSuccess',
+        text1: t('accountDeleted'),
+      });
+      rootNavigation?.reset({
+        index: 0,
+        routes: [{ name: 'AuthNavigation' }],
+      });
+    } else {
+      Toast.show({
+        type: 'appError',
+        text1: t('deleteAccountFailed'),
+      });
     }
   };
 
@@ -169,7 +176,11 @@ const ProfileEditScreen = () => {
       <BottomSheet
         visible={isDeleteAccountModalVisible}
         onClose={() => setDeleteAccountModalVisible(false)}
-        title={language === 'korean' ? '정말로 탈퇴하시겠습니까 ?' : 'Are you sure you want to delete your account?'}
+        title={
+          language === 'korean'
+            ? '정말로 탈퇴하시겠습니까 ?'
+            : 'Are you sure you want to delete your account?'
+        }
         items={[
           {
             label: language === 'korean' ? '탈퇴하기' : 'Delete',

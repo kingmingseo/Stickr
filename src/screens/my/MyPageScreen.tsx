@@ -60,6 +60,10 @@ const MyPageScreen = () => {
     setContributorsModalVisible(true);
   };
 
+  const handleHowToUsePress = () => {
+    navigation.navigate('GboardOnboardingScreen');
+  };
+
   const handleLogoutPress = () => {
     if (isAuthenticated) {
       signOut();
@@ -123,6 +127,11 @@ const MyPageScreen = () => {
             {language === 'korean' ? '기타' : 'Others'}
           </Text>
           <View style={styles.sectionCard}>
+            <Pressable style={styles.settingRow} onPress={handleHowToUsePress}>
+              <Text style={styles.settingLabel}>{t('howToUse')}</Text>
+              <Text style={styles.chevron}>›</Text>
+            </Pressable>
+
             <Pressable style={styles.settingRow} onPress={handleRatingPress}>
               <Text style={styles.settingLabel}>
                 {language === 'korean' ? '앱 평가하기' : 'Rate App'}

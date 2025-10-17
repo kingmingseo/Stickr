@@ -1,7 +1,7 @@
 export type AuthStackParamList = {
   AuthHomeScreen: undefined;
-  OnboardingScreen: undefined;
   BottomTabNavigation: undefined;
+  GboardOnboardingScreen: undefined;
 };
 
 export type BottomTabParamList = {
@@ -10,9 +10,8 @@ export type BottomTabParamList = {
   MyPageScreen: undefined;
 };
 
-
 export type RootStackParamList = {
-  OnboardingScreen: undefined;
+  GboardOnboardingScreen: undefined;
   BottomTabNavigation: undefined;
   AuthNavigation: undefined;
   SearchScreen: undefined;

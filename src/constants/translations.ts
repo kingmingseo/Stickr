@@ -63,7 +63,9 @@ export const translations = {
     enterNewNickname: '새로운 닉네임을 입력해주세요',
     enterNewBio: '새로운 자기소개를 입력해주세요',
     updateComplete: '변경 완료',
-    updateFailed: '변경 실패',
+    updateFailed: '변경 실패',  
+    accountDeleted: '계정이 삭제되었습니다.',
+    deleteAccountFailed: '계정 삭제에 실패했습니다.',
 
     // 로그인
     login: '로그인',
@@ -83,14 +85,40 @@ export const translations = {
     loginWithKakao: '카카오로 로그인하기',
 
     // 온보딩
-    onboarding1Title: '스티커로 스토리를 꾸며보세요',
-    onboarding1Subtitle: '쉽고 빠르게 복사해서 바로 붙여넣기',
-    onboarding2Title: '좋아요/즐겨찾기',
-    onboarding2Subtitle: '마음에 드는 스티커를 저장하고 빠르게 찾기',
-    onboarding3Title: '검색과 카테고리',
-    onboarding3Subtitle: '원하는 분위기의 스티커를 바로 찾아요',
+    onboarding1Title: '원하는 스티커를 선택하세요!',
+    onboarding1Subtitle: '쉽고 빠르게 복사 후 인스타로 이동하기',
+    onboarding2Title: '복사한 스티커를 붙여넣어 보세요!',
+    onboarding2Subtitle: '키보드 상단 복사한 스티커 터치하기',
+    onboarding3Title: '마음 껏 꾸미기!',
+    onboarding3Subtitle: '원하는 크기와 위치에 조정 후 완료!',
     continue: '계속',
     start: '시작하기',
+    skip: '건너뛰기',
+    
+    // Gboard 온보딩
+    gboardOnboardingTitle: 'Gboard가 필요해요',
+    gboardOnboardingSubtitle: 'Stickr는 Gboard를 통해 스티커를 붙여넣어요',
+    gboardInstallTitle1: '설정 앱 접근하기',
+    gboardInstallTitle2: '언어 및 입력 방식 탭 터치',
+    gboardInstallTitle3: '스크린 키보드 탭 터치',
+    gboardInstallTitle4: '키보드 관리 탭 터치',
+    gboardInstallTitle5: 'Gboard 활성화 하기',
+    gboardInstallTitle6: '기본 키보드 설정 탭 터치',
+    gboardInstallTitle7: 'Gboard 활성화 후 완료',
+    gboardInstallSubtitle: '아래 버튼을 눌러 Gboard를 설치해주세요',
+    gboardSetupTitle: 'Gboard 설정하기',
+    gboardSetupSubtitle: 'Gboard 설치 완료 후 설정 앱 실행 -> 일반',
+    gboardCheckInstalled: '설치 확인',
+    installGboard: 'Gboard 설치하러 가기',
+    howToUse: 'Stickr 사용법 보기',
+    gboardSetupSubtitle2: '언어 및 입력 방식를 선택해주세요',
+    gboardSetupSubtitle3: '스크린 키보드를 선택해주세요',
+    gboardSetupSubtitle4: '키보드 관리를 선택해주세요',
+    gboardSetupSubtitle5: 'Gboard를 활성화후 뒤로 가기',
+    gboardSetupSubtitle6: '기본 키보드 설정 탭 선택해주세요!',
+    gboardSetupSubtitle7: 'Gboard로 기본 키보드 변경완료!',
+    gboardSetupComplete: '설정 완료!',
+    gboardSetupCompleteSubtitle: 'Gboard 설정이 완료되었습니다',
 
     // Auth Form
     email: '이메일 주소',
@@ -196,7 +224,8 @@ export const translations = {
     enterNewBio: 'Enter new bio',
     updateComplete: 'Update Complete',
     updateFailed: 'Update Failed',
-
+    accountDeleted: 'Account deleted.',
+    deleteAccountFailed: 'Account deletion failed.',
     // Login
     login: 'Login',
     signup: 'Sign Up',
@@ -223,7 +252,27 @@ export const translations = {
     onboarding3Subtitle: 'Find stickers that match your mood',
     continue: 'Continue',
     start: 'Get Started',
-
+    skip: 'Skip',
+    
+    // Gboard Onboarding
+    gboardOnboardingTitle: 'Gboard is Required',
+    gboardOnboardingSubtitle: 'Stickr uses Gboard to paste stickers',
+    gboardInstallTitle: 'Install Gboard',
+    gboardInstallSubtitle: 'Tap the button below to install Gboard',
+    gboardSetupTitle: 'Set up Gboard',
+    gboardSetupSubtitle: 'Settings → System → Languages & input → Enable Gboard',
+    gboardCheckInstalled: 'Check Installation',
+    installGboard: 'Install Gboard',
+    howToUse: 'How to use Stickr',
+    gboardSetupSubtitle2: 'Select language and input method',
+    gboardSetupSubtitle3: 'Select screen keyboard',
+    gboardSetupSubtitle4: 'Select keyboard management',
+    gboardSetupSubtitle5: 'Enable Gboard and go back',
+    gboardSetupSubtitle6: 'Select default keyboard setting tab',
+    gboardSetupSubtitle7: 'Default keyboard changed to Gboard',
+    gboardSetupComplete: 'Setup Complete!',
+    gboardSetupCompleteSubtitle: 'Gboard setup is complete',
+    
     // Auth Form
     email: 'Email',
     emailRequired: 'Please enter your email',

@@ -6,7 +6,7 @@ import useSupabaseSession from '../hooks/useSupabaseSession';
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SearchScreen from '../screens/search/SearchScreen';
-import OnboardingScreen from '../screens/auth/OnboardingScreen';
+import GboardOnboardingScreen from '../screens/onboarding/GboardOnboardingScreen';
 import { NavigationContainer } from '@react-navigation/native';
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -20,11 +20,11 @@ function RootNavigation() {
   useEffect(() => {
     const init = async () => {
       try {
-        const seen = await AsyncStorage.getItem('hasSeenOnboarding');
+        const seenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
         const guestStatus = await AsyncStorage.getItem('guestMode');
         console.log('guestStatus', guestStatus);
         setGuestMode(guestStatus === '1');
-        setShowOnboarding(!seen);
+        setShowOnboarding(!seenOnboarding);
       } finally {
         setLoading(false);
       }
@@ -36,7 +36,7 @@ function RootNavigation() {
 
   // 초기 라우트 계산: 온보딩 > 비로그인(비게스트) 로그인 플로우 > 게스트/로그인 시 메인
   const initialRouteName = showOnboarding
-    ? 'OnboardingScreen'
+    ? 'GboardOnboardingScreen'
     : !isAuthenticated && !guestMode
     ? 'AuthNavigation'
     : 'BottomTabNavigation';
@@ -47,9 +47,9 @@ function RootNavigation() {
     <NavigationContainer key={navigationKey}>
       <Stack.Navigator
         screenOptions={{ headerShown: false }}
-        initialRouteName={initialRouteName}
+        initialRouteName={initialRouteName as keyof RootStackParamList}
       >
-        <Stack.Screen name="OnboardingScreen" component={OnboardingScreen} />
+        <Stack.Screen name="GboardOnboardingScreen" component={GboardOnboardingScreen} />
         <Stack.Screen name="AuthNavigation" component={AuthNavigation} />
         <Stack.Screen
           name="BottomTabNavigation"
