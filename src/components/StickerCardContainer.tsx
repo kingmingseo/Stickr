@@ -89,7 +89,7 @@ const StickerCardContainer = ({
               fetchNextPage();
             }
           }}
-          onEndReachedThreshold={0.5}
+          onEndReachedThreshold={0.8}
         />
       )}
     </View>

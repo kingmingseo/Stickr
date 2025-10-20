@@ -123,7 +123,7 @@ const MyPageScreen = () => {
                   false: colors[theme].GRAY_300,
                   true: colors[theme].PURPLE_400,
                 }}
-                thumbColor={colors[theme].WHITE}
+                thumbColor={colors[theme].GRAY_400}
               />
             </View>
           </View>

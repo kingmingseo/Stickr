@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  Image,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -18,6 +17,7 @@ import { Sticker } from '../types/sticker';
 import { useToggleHeart } from '../hooks/query/useToggleHeart';
 import { useTranslation } from '../hooks/useTranslation';
 import useSupabaseSession from '../hooks/useSupabaseSession';
+import FastImage from 'react-native-fast-image';
 
 export type StickerCardProps = {
   sticker: Sticker;
@@ -139,10 +139,10 @@ export const StickerCard = ({
 
   const image = (
     <View>
-      <Image
+      <FastImage
         source={{ uri }}
         style={[styles.image, { width: size, height: size, borderRadius }]}
-        resizeMode="contain"
+        resizeMode={FastImage.resizeMode.contain}
       />
     </View>
   );
@@ -179,7 +179,7 @@ const styling = (theme: ThemeMode) =>
       position: 'relative',
     },
     image: {
-      backgroundColor: colors[theme].GRAY_200,
+      backgroundColor: colors[theme].STICKER_BACKGROUND,
     },
     overlay: {
       position: 'absolute',

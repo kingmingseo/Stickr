@@ -15,6 +15,7 @@ const colors = {
     PURPLE_400: '#6D5EF5',
     MAIN_DARK_TEXT: '#333D4B',
     SUB_DARK_TEXT: '#8E8E93',
+    STICKER_BACKGROUND: '#B0B0B0',
   },
   dark: {
     WHITE: '#1E1E1E',
@@ -32,6 +33,7 @@ const colors = {
     PURPLE_400: '#8B7CFF',
     MAIN_DARK_TEXT: '#FFF',
     SUB_DARK_TEXT: '#CFCFCF',
+    STICKER_BACKGROUND: '#575757',
   },
 };
 // 앱 전역 그라데이션 팔레트 (좌→우)
