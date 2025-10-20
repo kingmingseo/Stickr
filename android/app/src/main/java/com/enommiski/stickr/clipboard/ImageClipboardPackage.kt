@@ -1,4 +1,4 @@
-package com.stickr.clipboard
+package com.enommiski.stickr.clipboard
 
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule

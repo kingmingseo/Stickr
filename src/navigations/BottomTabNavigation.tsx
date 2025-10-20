@@ -35,8 +35,9 @@ const BottomTabNavigation = () => {
           shadowOpacity: 0,
           borderTopColor: colors[theme].GRAY_300,
           backgroundColor: colors[theme].WHITE,
+          height : 60
         },
-        tabBarActiveTintColor: '#6D5EF5',
+        tabBarActiveTintColor: colors[theme].PURPLE_400,
         tabBarInactiveTintColor: colors[theme].GRAY_400,
         tabBarLabelStyle: {
           fontSize: 12,

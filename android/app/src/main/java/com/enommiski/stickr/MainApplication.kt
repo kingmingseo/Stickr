@@ -1,4 +1,4 @@
-package com.stickr
+package com.enommiski.stickr
 
 import android.app.Application
 import com.facebook.react.PackageList
@@ -9,8 +9,8 @@ import com.facebook.react.ReactNativeHost
 import com.facebook.react.ReactPackage
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
-import com.stickr.appswitcher.AppSwitcherPackage
-import com.stickr.clipboard.ImageClipboardPackage
+import com.enommiski.stickr.appswitcher.AppSwitcherPackage
+import com.enommiski.stickr.clipboard.ImageClipboardPackage
 
 class MainApplication : Application(), ReactApplication {
 

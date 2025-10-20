@@ -1,4 +1,4 @@
-package com.stickr.appswitcher
+package com.enommiski.stickr.appswitcher
 
 import android.content.Intent
 import com.facebook.react.bridge.Promise

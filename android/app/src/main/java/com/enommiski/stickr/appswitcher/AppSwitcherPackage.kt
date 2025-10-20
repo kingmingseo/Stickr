@@ -1,4 +1,4 @@
-package com.stickr.appswitcher
+package com.enommiski.stickr.appswitcher
 
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule

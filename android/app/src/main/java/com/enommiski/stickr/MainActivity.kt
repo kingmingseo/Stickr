@@ -1,4 +1,4 @@
-package com.stickr
+package com.enommiski.stickr
 
 import android.os.Bundle
 import com.facebook.react.ReactActivity
