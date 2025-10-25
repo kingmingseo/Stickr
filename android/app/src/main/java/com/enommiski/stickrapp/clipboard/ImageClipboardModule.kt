@@ -1,4 +1,4 @@
-package com.enommiski.stickr.clipboard
+package com.enommiski.stickrapp.clipboard
 
 import android.content.ClipData
 import android.content.ClipDescription

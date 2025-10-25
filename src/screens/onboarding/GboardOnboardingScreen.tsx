@@ -172,9 +172,17 @@ const GboardOnboardingScreen = () => {
   };
 
   const handleComplete = async () => {
+    // 온보딩 완료 표시
+    await AsyncStorage.setItem('hasSeenOnboarding', '1');
+
     if (isAuthenticated || (await AsyncStorage.getItem('guestMode')) === '1') {
-      navigation.goBack();
+      // 로그인되어 있거나 게스트 모드면 메인으로
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'BottomTabNavigation' }],
+      });
     } else {
+      // 비로그인이면 로그인 화면으로
       navigation.reset({
         index: 0,
         routes: [{ name: 'AuthNavigation' }],

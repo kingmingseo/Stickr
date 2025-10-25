@@ -85,9 +85,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.enommiski.stickr"
+    namespace "com.enommiski.stickrapp"
     defaultConfig {
-        applicationId "com.enommiski.stickr"
+        applicationId "com.enommiski.stickrapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
