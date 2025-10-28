@@ -98,7 +98,7 @@ function useAuth() {
       }
       // 온보딩 상태 보존
       const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
-
+      
       // 로컬 캐시 완전히 클리어
       queryClient.clear();
       await AsyncStorage.clear();

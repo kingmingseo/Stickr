@@ -72,9 +72,9 @@ const MyPageScreen = () => {
     Linking.openURL('https://stickr-uploader.vercel.app/privacy');
   };
 
-  const handleLogoutPress = () => {
+  const handleLogoutPress = async () => {
     if (isAuthenticated) {
-      signOut();
+      await signOut();
     }
     navigation.reset({
       index: 0,

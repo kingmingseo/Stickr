@@ -3,7 +3,6 @@ import React from 'react';
 import { colors } from '../constants/colors';
 import { ThemeMode, useThemeStore } from '../store/themeStore';
 import ChipButton from './ChipButton';
-import MyInfo from './MyInfo';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { MyPageStackParamList } from '../types/navigation';
@@ -28,7 +27,7 @@ const ProfileCard = ({ isAuthenticated, profile }: ProfileCardProps) => {
         source={
           profile?.avatar_url
             ? { uri: profile.avatar_url }
-            : require('../assets/Stickr.png')
+            : require('../assets/guest.png')
         }
       />
       <Text style={styles.text}>{profile?.nickname ?? t('guest')}</Text>

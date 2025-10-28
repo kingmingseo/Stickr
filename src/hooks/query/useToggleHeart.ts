@@ -35,49 +35,60 @@ export function useToggleHeart() {
       currentIsFavorited,
       currentLikeCount = 0,
     }: Variables) => {
-      // 1. 진행 중인 모든 stickers 쿼리 취소 (경쟁 상태 방지)
+      // 1. 진행 중인 모든 stickers 및 searchStickers 쿼리 취소 (경쟁 상태 방지)
       await queryClient.cancelQueries({ queryKey: ['stickers'], exact: false });
+      await queryClient.cancelQueries({ queryKey: ['searchStickers'], exact: false });
 
       // 2. 현재 캐시 상태 백업 (실패 시 롤백용)
-      const prev = queryClient.getQueriesData({ queryKey: ['stickers'] });
+      const prevStickers = queryClient.getQueriesData({ queryKey: ['stickers'] });
+      const prevSearchStickers = queryClient.getQueriesData({ queryKey: ['searchStickers'] });
 
       // 3. 새로운 상태 계산
       const nextIsFavorited = !currentIsFavorited; // true ↔ false
       const likeDelta = nextIsFavorited ? 1 : -1; // 좋아요 +1 또는 -1
 
-      // 4. 모든 stickers 관련 쿼리 캐시 즉시 업데이트
+      // 4. 캐시 업데이트 함수 (재사용)
+      const updateStickerInPages = (old: any) => {
+        // infinite query 구조가 아니면 그대로 반환
+        if (!old || !Array.isArray(old.pages)) return old;
+
+        // 모든 페이지를 순회하며 해당 스티커만 업데이트
+        return {
+          ...old,
+          pages: old.pages.map((page: any) => ({
+            ...page,
+            data: page.data.map(
+              (s: Sticker) =>
+                s.id === stickerId
+                  ? {
+                      ...s,
+                      is_favorited: nextIsFavorited, // 즐겨찾기 상태 토글
+                      like_count: Math.max(
+                        0, // 음수 방지
+                        (s.like_count ?? currentLikeCount) + likeDelta, // 좋아요 수 증감
+                      ),
+                    }
+                  : s, // 다른 스티커는 그대로
+            ),
+          })),
+        };
+      };
+
+      // 5. 모든 stickers 관련 쿼리 캐시 즉시 업데이트
       // ['stickers', 'popular', '전체'], ['stickers', undefined, 'favorites'] 등 모든 쿼리
       queryClient.setQueriesData(
         { queryKey: ['stickers'], exact: false },
-        (old: any) => {
-          // infinite query 구조가 아니면 그대로 반환
-          if (!old || !Array.isArray(old.pages)) return old;
-
-          // 모든 페이지를 순회하며 해당 스티커만 업데이트
-          return {
-            ...old,
-            pages: old.pages.map((page: any) => ({
-              ...page,
-              data: page.data.map(
-                (s: Sticker) =>
-                  s.id === stickerId
-                    ? {
-                        ...s,
-                        is_favorited: nextIsFavorited, // 즐겨찾기 상태 토글
-                        like_count: Math.max(
-                          0, // 음수 방지
-                          (s.like_count ?? currentLikeCount) + likeDelta, // 좋아요 수 증감
-                        ),
-                      }
-                    : s, // 다른 스티커는 그대로
-              ),
-            })),
-          };
-        },
+        updateStickerInPages,
       );
 
-      // 5. 백업된 상태를 context로 반환 (onError에서 롤백용)
-      return { prev };
+      // 6. 검색 결과 캐시도 즉시 업데이트
+      queryClient.setQueriesData(
+        { queryKey: ['searchStickers'], exact: false },
+        updateStickerInPages,
+      );
+
+      // 7. 백업된 상태를 context로 반환 (onError에서 롤백용)
+      return { prevStickers, prevSearchStickers };
     },
 
     /**
@@ -86,7 +97,10 @@ export function useToggleHeart() {
      */
     onError: (_err, _vars, ctx) => {
       // 백업된 모든 쿼리 상태를 원래대로 복원
-      ctx?.prev?.forEach(([key, data]: any) =>
+      ctx?.prevStickers?.forEach(([key, data]: any) =>
+        queryClient.setQueryData(key, data),
+      );
+      ctx?.prevSearchStickers?.forEach(([key, data]: any) =>
         queryClient.setQueryData(key, data),
       );
     },
@@ -98,6 +112,8 @@ export function useToggleHeart() {
     onSettled: () => {
       // 모든 stickers 관련 쿼리를 무효화하여 서버에서 최신 데이터 가져오기
       queryClient.invalidateQueries({ queryKey: ['stickers'], exact: false });
+      // 검색 결과도 무효화
+      queryClient.invalidateQueries({ queryKey: ['searchStickers'], exact: false });
     },
   });
 }
