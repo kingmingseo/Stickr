@@ -3,32 +3,15 @@ import { Animated, Dimensions, Easing, Keyboard, Platform } from 'react-native';
 
 type FieldRect = { y: number; height: number };
 
-// 오버로드 시그니처
-export function useKeyboard(duration?: number, extraOffset?: number): Animated.Value;
-export function useKeyboard(options: {
+type UseKeyboardOptions = {
   duration?: number;
   extraOffset?: number;
-  smart: true;
-}): [Animated.Value, (rect: FieldRect) => void];
+};
 
-// 구현부
 export function useKeyboard(
-  arg1?: number | { duration?: number; extraOffset?: number; smart?: boolean },
-  arg2?: number,
-) {
-  const isSmartMode = typeof arg1 === 'object' && !!arg1?.smart;
-  const duration =
-    typeof arg1 === 'object'
-      ? arg1.duration ?? 300
-      : typeof arg1 === 'number'
-      ? arg1
-      : 300;
-  const extraOffset =
-    typeof arg1 === 'object'
-      ? arg1.extraOffset ?? 130
-      : typeof arg2 === 'number'
-      ? arg2
-      : 130;
+  options: UseKeyboardOptions = {}
+): [Animated.Value, (rect: FieldRect) => void] {
+  const { duration = 300, extraOffset = 130 } = options;
 
   // UI를 움직일 Animated 값 (실제로는 위로 올릴 양)
   const translateAmount = useRef(new Animated.Value(0)).current;
@@ -38,7 +21,6 @@ export function useKeyboard(
   const currentTranslateRef = useRef(0);
 
   const computeTargetTranslate = useCallback((kbHeight: number) => {
-    if (!isSmartMode) return kbHeight + extraOffset;
     const rect = focusedFieldRectRef.current;
     if (!rect) return kbHeight + extraOffset;
     const windowHeight = Dimensions.get('window').height;
@@ -48,7 +30,7 @@ export function useKeyboard(
     const fieldBottomFromBase = fieldBottomMeasured + currentTranslateRef.current;
     const needed = fieldBottomFromBase + extraOffset - keyboardTop;
     return needed > 0 ? needed : 0;
-  }, [isSmartMode, extraOffset]);
+  }, [extraOffset]);
 
   const animateTo = useCallback((toValue: number) => {
     // 애니메이션 시작 전에 목표값을 기억해 기준 좌표 계산의 일관성 보장
@@ -66,12 +48,12 @@ export function useKeyboard(
   const setFocusedFieldRect = useCallback((rect: FieldRect) => {
     focusedFieldRectRef.current = rect;
     // 키보드가 열린 상태에서 포커스 이동 시 즉시 재계산
-    if (isSmartMode && keyboardVisibleRef.current) {
+    if (keyboardVisibleRef.current) {
       const kbHeight = lastKeyboardHeightRef.current;
       const toValue = computeTargetTranslate(kbHeight);
       animateTo(toValue);
     }
-  }, [isSmartMode, computeTargetTranslate, animateTo]);
+  }, [computeTargetTranslate, animateTo]);
 
   useEffect(() => {
     const showEvent =
@@ -98,7 +80,7 @@ export function useKeyboard(
       showSub.remove();
       hideSub.remove();
     };
-  }, [duration, translateAmount, extraOffset, isSmartMode, computeTargetTranslate, animateTo]);
+  }, [duration, translateAmount, extraOffset, computeTargetTranslate, animateTo]);
 
-  return isSmartMode ? [translateAmount, setFocusedFieldRect] : translateAmount;
+  return [translateAmount, setFocusedFieldRect];
 }

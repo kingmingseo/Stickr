@@ -14,10 +14,15 @@ import { useNavigation } from '@react-navigation/native';
 import { colors } from '../constants/colors';
 import { ThemeMode, useThemeStore } from '../store/themeStore';
 
-const CustomHeader = () => {
+interface CustomHeaderProps {
+  hideSearchIcon?: boolean;
+}
+
+const CustomHeader = ({ hideSearchIcon = false }: CustomHeaderProps) => {
   const theme = useThemeStore(s => s.theme);
   const styles = styling(theme);
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  
   return (
     <View style={styles.container}>
       <Svg height="30" width="120" style={styles.logoContainer}>
@@ -38,14 +43,16 @@ const CustomHeader = () => {
           Stickr
         </SvgText>
       </Svg>
-      <TouchableOpacity
-        style={styles.settingsButton}
-        onPress={() => {
-          navigation.navigate('SearchScreen');
-        }}
-      >
-        <Icon name="search" size={20} color={colors[theme].MAIN_DARK_TEXT} />
-      </TouchableOpacity>
+      {!hideSearchIcon && (
+        <TouchableOpacity
+          style={styles.settingsButton}
+          onPress={() => {
+            navigation.navigate('SearchScreen');
+          }}
+        >
+          <Icon name="search" size={20} color={colors[theme].MAIN_DARK_TEXT} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

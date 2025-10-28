@@ -24,7 +24,10 @@ const IndividualEditScreen = () => {
   const isNickname = params.title === t('changeNickname');
   const isBio = params.title === t('changeBio');
 
-  const keyboardHeight = useKeyboard(300, -60);
+  const [keyboardHeight, onFieldFocusForKeyboard] = useKeyboard({
+    duration: 300,
+    extraOffset: -60,
+  });
   const [value, setValue] = useState('');
   const { user } = useSupabaseSession();
   const { data: profile } = useGetProfile(user?.id);
@@ -59,6 +62,7 @@ const IndividualEditScreen = () => {
         placeholder={placeholderValue}
         value={value}
         onChangeText={setValue}
+        onMeasureForKeyboard={onFieldFocusForKeyboard}
       />
       <Animated.View
         style={[

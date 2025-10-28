@@ -30,7 +30,6 @@ const AuthHomeScreen = () => {
   const [keyboardHeight, onFieldFocusForKeyboard] = useKeyboard({
     duration: 300,
     extraOffset: 200,
-    smart: true,
   });
   const {
     signInWithGoogle,

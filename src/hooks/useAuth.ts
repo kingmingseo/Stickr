@@ -289,6 +289,7 @@ function useAuth() {
         password: password,
         options: {
           data: { nickname },
+          emailRedirectTo: 'https://stickr-uploader.vercel.app/confirm',
         },
       });
       if (error) {
@@ -311,6 +312,9 @@ function useAuth() {
       setLoading(true);
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'kakao',
+        options: {
+          redirectTo: 'stickr://auth/callback',
+        },
       });
 
       console.log('Kakao OAuth 결과:', { data, error });

@@ -58,6 +58,15 @@ const BottomTabNavigation = () => {
         name="FavoritesScreen"
         component={FavoritesScreen}
         options={{
+          headerShown: true,
+          header: () => <CustomHeader hideSearchIcon={true} />,
+          headerStyle: {
+            backgroundColor: colors[theme].WHITE,
+            height: 60,
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0,
+          },
           tabBarIcon: ({ color }) => (
             <Icon name="heart" size={20} color={color} />
           ),
