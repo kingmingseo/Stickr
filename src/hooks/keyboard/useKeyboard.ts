@@ -26,6 +26,7 @@ export function useKeyboard(
     const windowHeight = Dimensions.get('window').height;
     const keyboardTop = windowHeight - kbHeight;
     const fieldBottomMeasured = rect.y + rect.height;
+    
     // 부모가 이미 올라가 있으면 측정값에 반영되어 있으므로, 기준 좌표로 환원
     const fieldBottomFromBase = fieldBottomMeasured + currentTranslateRef.current;
     const needed = fieldBottomFromBase + extraOffset - keyboardTop;

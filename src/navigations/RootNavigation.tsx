@@ -30,7 +30,7 @@ function RootNavigation() {
       }
     };
     init();
-  }, []);
+  }, [isAuthenticated, guestMode]);
 
   if (loading) return null;
 

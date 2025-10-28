@@ -29,7 +29,7 @@ const AuthHomeScreen = () => {
   const verticalGap = isSmallScreen ? 6 : 12;
   const [keyboardHeight, onFieldFocusForKeyboard] = useKeyboard({
     duration: 300,
-    extraOffset: 200,
+    extraOffset: 300,
   });
   const {
     signInWithGoogle,
@@ -52,7 +52,7 @@ const AuthHomeScreen = () => {
         right: 0,
         top: Animated.multiply(keyboardHeight, -1), // 키보드 높이만큼 위로
         bottom: 0,
-        backgroundColor: colors[theme].WHITE, // 필요 시 배경색
+        backgroundColor: colors[theme].WHITE,
       }}
     >
       <View style={styles.container}>
@@ -138,7 +138,10 @@ const AuthHomeScreen = () => {
             />
           )}
           {mode === 'login' && <Text style={styles.skip}>{t('or')}</Text>}
-          <AuthForm mode={mode} onFieldFocusForKeyboard={onFieldFocusForKeyboard} />
+          <AuthForm
+            mode={mode}
+            onFieldFocusForKeyboard={onFieldFocusForKeyboard}
+          />
         </View>
       </View>
 
