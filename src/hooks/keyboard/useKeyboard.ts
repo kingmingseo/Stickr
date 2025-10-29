@@ -14,22 +14,23 @@ export function useKeyboard(
   const { duration = 300, extraOffset = 130 } = options;
 
   // UI를 움직일 Animated 값 (실제로는 위로 올릴 양)
-  const translateAmount = useRef(new Animated.Value(0)).current;
-  const focusedFieldRectRef = useRef<FieldRect | null>(null);
-  const keyboardVisibleRef = useRef(false);
-  const lastKeyboardHeightRef = useRef(0);
-  const currentTranslateRef = useRef(0);
+  const translateAmount = useRef(new Animated.Value(0)).current; // → 화면을 올릴 양 (픽셀 단위)
+  
+  const focusedFieldRectRef = useRef<FieldRect | null>(null); // → 현재 포커스된 필드의 위치 { y: number, height: number }
+  const keyboardVisibleRef = useRef(false); // → 키보드가 현재 보이는지 여부
+  const lastKeyboardHeightRef = useRef(0); // → 마지막 키보드 높이
+  const currentTranslateRef = useRef(0); // → 현재 화면이 올라간 양 (기준 좌표 계산용)
 
   const computeTargetTranslate = useCallback((kbHeight: number) => {
     const rect = focusedFieldRectRef.current;
     if (!rect) return kbHeight + extraOffset;
-    const windowHeight = Dimensions.get('window').height;
-    const keyboardTop = windowHeight - kbHeight;
-    const fieldBottomMeasured = rect.y + rect.height;
+    const windowHeight = Dimensions.get('window').height;  //화면 높이
+    const keyboardTop = windowHeight - kbHeight;   // 키보드 상단 위치
+    const fieldBottomMeasured = rect.y + rect.height;   // 필드 하단 위치 (측정된 값)
     
     // 부모가 이미 올라가 있으면 측정값에 반영되어 있으므로, 기준 좌표로 환원
-    const fieldBottomFromBase = fieldBottomMeasured + currentTranslateRef.current;
-    const needed = fieldBottomFromBase + extraOffset - keyboardTop;
+    const fieldBottomFromBase = fieldBottomMeasured + currentTranslateRef.current;   // 이미 올라간 만큼 반영 (기준 좌표로 환원)
+    const needed = fieldBottomFromBase + extraOffset - keyboardTop;   // 필요한 이동량 계산
     return needed > 0 ? needed : 0;
   }, [extraOffset]);
 
@@ -46,15 +47,19 @@ export function useKeyboard(
     });
   }, [duration, translateAmount]);
 
+
+  const calculate = useCallback(() => {
+    // 키보드가 열려있지 않으면 아무것도 안 함
+    if (!keyboardVisibleRef.current) return;
+    const kbHeight = lastKeyboardHeightRef.current;
+    const toValue = computeTargetTranslate(kbHeight);
+    animateTo(toValue);
+  }, [computeTargetTranslate, animateTo]);
+
   const setFocusedFieldRect = useCallback((rect: FieldRect) => {
     focusedFieldRectRef.current = rect;
-    // 키보드가 열린 상태에서 포커스 이동 시 즉시 재계산
-    if (keyboardVisibleRef.current) {
-      const kbHeight = lastKeyboardHeightRef.current;
-      const toValue = computeTargetTranslate(kbHeight);
-      animateTo(toValue);
-    }
-  }, [computeTargetTranslate, animateTo]);
+    calculate();  // 간단하게 계산 함수 호출
+  }, [calculate]);
 
   useEffect(() => {
     const showEvent =
@@ -66,8 +71,7 @@ export function useKeyboard(
       const kbHeight = e.endCoordinates.height;
       keyboardVisibleRef.current = true;
       lastKeyboardHeightRef.current = kbHeight;
-      const toValue = computeTargetTranslate(kbHeight);
-      animateTo(toValue);
+      calculate();  
     });
 
     const hideSub = Keyboard.addListener(hideEvent, () => {
@@ -81,7 +85,7 @@ export function useKeyboard(
       showSub.remove();
       hideSub.remove();
     };
-  }, [duration, translateAmount, extraOffset, computeTargetTranslate, animateTo]);
+  }, [calculate, animateTo]);
 
   return [translateAmount, setFocusedFieldRect];
 }
