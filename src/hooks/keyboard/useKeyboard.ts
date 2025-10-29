@@ -35,8 +35,8 @@ export function useKeyboard(
   }, [extraOffset]);
 
   const animateTo = useCallback((toValue: number) => {
-    // 애니메이션 시작 전에 목표값을 기억해 기준 좌표 계산의 일관성 보장
-    currentTranslateRef.current = toValue;
+    // 애니메이션 완료 후에만 currentTranslateRef를 업데이트하여
+    // 애니메이션 진행 중 새로운 필드 측정 시 올바른 기준 좌표 사용
     Animated.timing(translateAmount, {
       toValue,
       duration,
@@ -75,7 +75,7 @@ export function useKeyboard(
     const hideSub = Keyboard.addListener(hideEvent, () => {
       keyboardVisibleRef.current = false;
       lastKeyboardHeightRef.current = 0;
-      currentTranslateRef.current = 0;
+      // currentTranslateRef는 animateTo의 완료 콜백에서 설정됨 (애니메이션 완료 후)
       animateTo(0);
     });
 
