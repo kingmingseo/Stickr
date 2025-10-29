@@ -49,8 +49,6 @@ export function useKeyboard(
 
 
   const calculate = useCallback(() => {
-    // 키보드가 열려있지 않으면 아무것도 안 함
-    if (!keyboardVisibleRef.current) return;
     const kbHeight = lastKeyboardHeightRef.current;
     const toValue = computeTargetTranslate(kbHeight);
     animateTo(toValue);

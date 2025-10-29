@@ -127,14 +127,14 @@ export async function getMyFavorites(
   return { data: stickers, nextCursor };
 }
 
-// 검색 API 함수  
+// 검색 API 함수
 export async function searchStickers(
   query: string,
   limit: number = 20,
   cursor?: string,
 ): Promise<{ data: Sticker[]; nextCursor: string | null }> {
   console.log('검색 API 호출:', { query, cursor });
-  
+
   // 검색 조건
   const orFilter = `title.ilike.%${query}%,description.ilike.%${query}%,tags.cs.{${query}}`;
 
@@ -150,7 +150,7 @@ export async function searchStickers(
     const [likeStr, idStr] = cursor.split('|');
     const likeCursor = parseInt(likeStr);
     const idCursor = parseInt(idStr);
-    
+
     // 좋아요 수가 작거나, 같으면서 ID가 작은 것만
     supabaseQuery = supabaseQuery.or(
       `like_count.lt.${likeCursor},and(like_count.eq.${likeCursor},auto_increment_id.lt.${idCursor})`,
