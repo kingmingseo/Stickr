@@ -21,13 +21,16 @@ import { useTranslation } from '../../hooks/useTranslation';
 import GradientButton from '../../components/GradientButton';
 import GeneralCustomButton from '../../components/GeneralCustomButton';
 import useSupabaseSession from '../../hooks/useSupabaseSession';
+import { useModal } from '../../hooks/useModal';
+import ErrorPopup from '../../components/ErrorPopup';
 
 const GBOARD_PACKAGE_NAME = 'com.google.android.inputmethod.latin';
 const GBOARD_PLAY_STORE_URL = `https://play.google.com/store/apps/details?id=${GBOARD_PACKAGE_NAME}`;
-const GBOARD_PAGES_COUNT = 8; // Gboard 관련 페이지 수
+const GBOARD_PAGES_COUNT = 7; // Gboard 관련 페이지 수
 
 const GboardOnboardingScreen = () => {
   const { t } = useTranslation();
+  const { isVisible, openModal, closeModal, title, message } = useModal();
   const { width } = Dimensions.get('window');
   const pageWidth = width;
   const [page, setPage] = useState(0);
@@ -38,7 +41,7 @@ const GboardOnboardingScreen = () => {
 
   const pages = useMemo(
     () => [
-      // Gboard 설치 및 설정 단계 (8페이지)
+      // Gboard 설치 및 설정 단계 (7페이지)
       {
         key: '1',
         title: t('gboardOnboardingTitle'),
@@ -103,15 +106,7 @@ const GboardOnboardingScreen = () => {
           source: require('../../assets/onboarding/7.png'),
         },
       },
-      {
-        key: '8',
-        title: t('gboardInstallTitle7'),
-        subtitle: t('gboardSetupCompleteSubtitle'),
-        media: {
-          type: 'image',
-          source: require('../../assets/onboarding/8.png'),
-        },
-      },
+
       // 서비스 온보딩 (3페이지)
       {
         key: '9',
@@ -199,13 +194,6 @@ const GboardOnboardingScreen = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      {/* 건너뛰기 버튼 - Gboard 페이지에서만 표시 */}
-      {page < GBOARD_PAGES_COUNT && (
-        <Pressable style={styles.skipButton} onPress={handleSkip}>
-          <Text style={styles.skipText}>{t('skip')}</Text>
-        </Pressable>
-      )}
-
       <FlatList
         ref={ref}
         data={pages}
@@ -215,7 +203,7 @@ const GboardOnboardingScreen = () => {
         showsHorizontalScrollIndicator={false}
         onScroll={onScroll}
         scrollEventThrottle={16}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <View style={[styles.page, { width: pageWidth }]}>
             <View style={styles.media}>
               <Image
@@ -228,13 +216,28 @@ const GboardOnboardingScreen = () => {
               <Text style={styles.title}>{item.title}</Text>
               <Text style={styles.subtitle}>{item.subtitle}</Text>
 
+              {/* 왜 Gboard가 필요한가요? - 첫 번째 페이지에서만 표시 */}
+              {index === 0 && (
+                <Pressable
+                  onPress={() => openModal(t('whyGboard'), t('whyGboardDesc'))}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('whyGboard')}
+                  style={styles.whyLink}
+                >
+                  <Text style={styles.whyLinkText}>{t('whyGboard')}</Text>
+                </Pressable>
+              )}
+
               {/* 설치 버튼 페이지 */}
               {item.showInstallButton && (
                 <Pressable
-                  style={styles.installTextButton}
+                  style={({ pressed }) => [
+                    styles.installButton,
+                    pressed && styles.installButtonPressed,
+                  ]}
                   onPress={handleInstallGboard}
                 >
-                  <Text style={styles.installTextButtonText}>
+                  <Text style={styles.installButtonText}>
                     {t('installGboard')}
                   </Text>
                 </Pressable>
@@ -245,10 +248,26 @@ const GboardOnboardingScreen = () => {
       />
 
       <View style={styles.footer}>
+        {/* 건너뛰기 버튼 - Gboard 페이지에서만 표시 */}
+        {page < GBOARD_PAGES_COUNT && (
+          <Pressable
+            style={({ pressed }) => [
+              styles.skipButton,
+              pressed && styles.skipButtonPressed,
+            ]}
+            onPress={handleSkip}
+          >
+            <View style={styles.skipButtonContent}>
+              <Text style={styles.skipTextMain}>{t('skipMain')}</Text>
+              <Text style={styles.skipTextSub}> {t('skipSub')}</Text>
+            </View>
+          </Pressable>
+        )}
+
         {/* 인디케이터 */}
         <View style={styles.indicatorContainer}>
           {page < GBOARD_PAGES_COUNT
-            ? // Gboard 페이지 인디케이터 (8개)
+            ? // Gboard 페이지 인디케이터 (7개)
               Array.from({ length: GBOARD_PAGES_COUNT }).map((_, i) => (
                 <View
                   key={i}
@@ -280,7 +299,13 @@ const GboardOnboardingScreen = () => {
             />
           ) : (
             <GeneralCustomButton
-              label={t('continue')}
+              label={
+                page < GBOARD_PAGES_COUNT
+                  ? page === GBOARD_PAGES_COUNT - 1
+                    ? t('viewServiceOnboarding')
+                    : t('next')
+                  : t('continue')
+              }
               size="large"
               backgroundColor={colors[theme].PURPLE_400}
               textColor={colors[theme].WHITE}
@@ -289,6 +314,14 @@ const GboardOnboardingScreen = () => {
           )}
         </View>
       </View>
+      {/* 안내 팝업 (로그인 실패 모달 스타일 재사용) */}
+      <ErrorPopup
+        visible={isVisible}
+        onClose={closeModal}
+        title={title}
+        message={message}
+        type="info"
+      />
     </SafeAreaView>
   );
 };
@@ -302,19 +335,31 @@ const styling = (theme: ThemeMode) =>
       backgroundColor: colors[theme].WHITE,
     },
     skipButton: {
-      position: 'absolute',
-      top: 8,
-      right: 16,
-      zIndex: 10,
+      alignSelf: 'center',
+      paddingVertical: 8,
       paddingHorizontal: 16,
-      paddingVertical: 10,
+      marginBottom: 16,
+      backgroundColor: colors[theme].GRAY_100,
       borderRadius: 20,
     },
-    skipText: {
-      fontSize: 15,
-      fontWeight: '700',
-      color: colors[theme].PURPLE_400,
+    skipButtonContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    skipButtonPressed: {
+      opacity: 0.6,
+    },
+    skipTextMain: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors[theme].GRAY_700,
       letterSpacing: -0.3,
+    },
+    skipTextSub: {
+      fontSize: 12,
+      fontWeight: '400',
+      color: colors[theme].GRAY_500,
+      letterSpacing: -0.2,
     },
     page: {
       flex: 1,
@@ -355,16 +400,40 @@ const styling = (theme: ThemeMode) =>
       lineHeight: 22,
       letterSpacing: -0.2,
     },
-    installTextButton: {
-      marginTop: 24,
-      paddingVertical: 12,
-      paddingHorizontal: 20,
+    whyLink: {
+      marginTop: 10,
     },
-    installTextButtonText: {
+    whyLinkText: {
+      fontSize: 13,
+      fontWeight: '600',
+      color: colors[theme].BLUE_500,
+      textAlign: 'center',
+      textDecorationLine: 'underline',
+      letterSpacing: -0.2,
+    },
+    installButton: {
+      marginTop: 24,
+      paddingVertical: 14,
+      paddingHorizontal: 24,
+      backgroundColor: colors[theme].PURPLE_400,
+      borderRadius: 12,
+      shadowColor: colors[theme].PURPLE_400,
+      shadowOffset: {
+        width: 0,
+        height: 4,
+      },
+      shadowOpacity: 0.2,
+      shadowRadius: 8,
+      elevation: 4,
+    },
+    installButtonPressed: {
+      opacity: 0.8,
+      transform: [{ scale: 0.98 }],
+    },
+    installButtonText: {
       fontSize: 16,
       fontWeight: '700',
-      color: colors[theme].PURPLE_400,
-      textDecorationLine: 'underline',
+      color: colors[theme].WHITE,
       textAlign: 'center',
       letterSpacing: -0.3,
     },
@@ -384,7 +453,7 @@ const styling = (theme: ThemeMode) =>
       justifyContent: 'center',
       alignItems: 'center',
       gap: 8,
-      marginBottom: 16,
+      marginBottom: 12,
     },
     dot: {
       width: 8,
