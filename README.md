@@ -141,17 +141,17 @@ $ npm run ios
 
 | 메인 화면 | 핵심 기능 |
 |:---:|:---:|
-| ![메인 화면](./docs/assets/main.png) | ![핵심 기능](./docs/assets/핵심기능1.png) |
+| <img src="./docs/assets/main.png" width="250"/> | <img src="./docs/assets/핵심기능1.png" width="250"/> |
 | 카테고리별 스티커 목록을 인기순/최신순으로 정렬하여 표시하는 화면 | 스티커를 탭하여 클립보드에 복사하고, 인스타그램 버튼으로 바로 이동하는 기능 |
 
 | 검색 화면 | 즐겨찾기 화면 | 즐겨찾기 빈 화면 |
 |:---:|:---:|:---:|
-| ![검색 화면](./docs/assets/search.png) | ![즐겨찾기 화면](./docs/assets/즐겨찾기2.png) | ![즐겨찾기 빈 화면](./docs/assets/즐겨찾기1.png) |
+| <img src="./docs/assets/search.png" width="250"/> | <img src="./docs/assets/즐겨찾기2.png" width="250"/> | <img src="./docs/assets/즐겨찾기1.png" width="250"/> |
 | 키워드로 스티커를 검색하는 화면 | 사용자가 즐겨찾기한 스티커 목록을 보여주는 화면 | 즐겨찾기가 비어있을 때 표시되는 화면 |
 
 | 마이페이지 | 로그인 화면 |
 |:---:|:---:|
-| ![마이페이지](./docs/assets/profile.png) | ![로그인 화면](./docs/assets/login.png) |
+| <img src="./docs/assets/profile.png" width="250"/> | <img src="./docs/assets/login.png" width="250"/> |
 | 사용자 프로필 정보를 확인하는 화면 | Google, Kakao 소셜 로그인을 제공하는 인증 화면 |
 
 <br/>
