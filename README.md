@@ -42,7 +42,7 @@
 
 <div align="center">
 
-<img src="./docs/assets/profile.png" width="150" style="border-radius: 10px;"/>
+<img src="https://github.com/kingmingseo.png" width="150" style="border-radius: 10px;"/>
 
 **김민서**
 
@@ -127,7 +127,6 @@ $ npm run ios
 ![Zustand](https://img.shields.io/badge/Zustand-000000?style=for-the-badge&logo=react&logoColor=white)
 ![React Navigation](https://img.shields.io/badge/React_Navigation-6200EA?style=for-the-badge&logo=react-router&logoColor=white)
 ![React Hook Form](https://img.shields.io/badge/React_Hook_Form-EC5990?style=for-the-badge&logo=reacthookform&logoColor=white)
-![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white)
 
 ### Backend & Database
 ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
@@ -145,10 +144,10 @@ $ npm run ios
 | ![메인 화면](./docs/assets/main.png) | ![핵심 기능](./docs/assets/핵심기능1.png) |
 | 카테고리별 스티커 목록을 인기순/최신순으로 정렬하여 표시하는 화면 | 스티커를 탭하여 클립보드에 복사하고, 인스타그램 버튼으로 바로 이동하는 기능 |
 
-| 검색 화면 | 즐겨찾기 화면 |
-|:---:|:---:|
-| ![검색 화면](./docs/assets/search.png) | ![즐겨찾기 화면](./docs/assets/즐겨찾기1.png) |
-| 키워드로 스티커를 검색하는 화면 | 사용자가 즐겨찾기한 스티커 목록을 보여주는 화면 |
+| 검색 화면 | 즐겨찾기 화면 | 즐겨찾기 빈 화면 |
+|:---:|:---:|:---:|
+| ![검색 화면](./docs/assets/search.png) | ![즐겨찾기 화면](./docs/assets/즐겨찾기2.png) | ![즐겨찾기 빈 화면](./docs/assets/즐겨찾기1.png) |
+| 키워드로 스티커를 검색하는 화면 | 사용자가 즐겨찾기한 스티커 목록을 보여주는 화면 | 즐겨찾기가 비어있을 때 표시되는 화면 |
 
 | 마이페이지 | 로그인 화면 |
 |:---:|:---:|
