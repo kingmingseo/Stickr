@@ -96,7 +96,7 @@ const ProfileEditScreen = () => {
           source={
             profile?.avatar_url
               ? { uri: profile.avatar_url }
-              : require('../../assets/Stickr.png')
+              : require('../../assets/guest.png')
           }
           style={styles.profileImage}
           resizeMode="cover"

@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Keyboard } from 'react-native';
 import React from 'react';
 import InputField from './InputField';
 import { useForm, Controller } from 'react-hook-form';
@@ -67,6 +67,9 @@ const AuthForm = ({ mode, onFieldFocusForKeyboard }: AuthFormProps) => {
           openModal(t('loginFailed'), errorMessage);
           return;
         }
+
+        // 키보드 닫기
+        Keyboard.dismiss();
 
         // 게스트 모드 해제
         await AsyncStorage.removeItem('guestMode');

@@ -49,7 +49,7 @@ const MyPageScreen = () => {
   };
 
   const handleRatingPress = () => {
-    Linking.openURL('https://apps.apple.com');
+    Linking.openURL('https://play.google.com/store/apps/details?id=com.enommiski.stickrapp');
   };
 
   const handleSupportPress = () => {
