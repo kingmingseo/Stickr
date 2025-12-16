@@ -26,6 +26,7 @@ const MainScreenContent = () => {
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteStickers({ category: categoryValue, sortBy });
+    
   const stickers: Sticker[] = (data?.pages ?? []).flatMap(page =>
     page && Array.isArray(page.data) ? (page.data as Sticker[]) : [],
   );

@@ -77,7 +77,7 @@ export async function updateProfileImage(
   imageUri: string,
 ): Promise<string> {
   try {
-    // 1. S3에 이미지 업로드
+    // 1. Supabase Storage에 이미지 업로드
     const imageUrl = await uploadProfileImage(userId, imageUri);
 
     // 2. Supabase 프로필 업데이트

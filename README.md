@@ -86,12 +86,6 @@ $ cd ..
 # Supabase
 SUPABASE_URL=your_supabase_url
 SUPABASE_ANON_KEY=your_supabase_anon_key
-
-# AWS S3
-AWS_ACCESS_KEY_ID=your_aws_access_key
-AWS_SECRET_ACCESS_KEY=your_aws_secret_key
-AWS_REGION=your_aws_region
-AWS_BUCKET_NAME=your_bucket_name
 ```
 
 ### Run
@@ -130,7 +124,6 @@ $ npm run ios
 
 ### Backend & Database
 ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
-![AWS S3](https://img.shields.io/badge/AWS_S3-569A31?style=for-the-badge&logo=amazon-s3&logoColor=white)
 
 ### Test
 ![Jest](https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white)
@@ -190,7 +183,7 @@ $ npm run ios
   - Kakao (Android/iOS)
   - Apple (iOS, 준비 중)
 - 이메일 회원가입 및 로그인
-- 프로필 이미지 업로드 및 수정 (AWS S3)
+- 프로필 이미지 업로드 및 수정 (Supabase Storage)
 - 닉네임 변경 기능
 - 게스트 모드 지원
 
@@ -230,8 +223,6 @@ src/
 │   ├── StickerCard.tsx
 │   └── StickerCardContainer.tsx
 │   └── ... (21개 컴포넌트)
-├── config/                 # 설정 파일
-│   └── aws.ts              # AWS S3 설정
 ├── constants/              # 상수 정의
 │   ├── categories.ts       # 카테고리 정보
 │   ├── colors.ts           # 색상 팔레트
